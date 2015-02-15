@@ -1,6 +1,6 @@
 class compbox {
     $comp_source = 'git://studentrobotics.org'
-    $comp_user = 'vagrant'
+    $compstate   = 'git://studentrobotics.org/comp/sr2015-comp.git'
 
     $track_source = false
 
@@ -95,6 +95,14 @@ class compbox {
         environment => 'HOME=/var/www',
         user        => 'www-data',
         require     => Exec['install bower']
+    }
+
+    # Compstate
+    vcsrepo { '/srv/state':
+        ensure   => present,
+        provider => git,
+        source   => $compstate,
+        owner    => 'www-data'
     }
 
     # Stream
