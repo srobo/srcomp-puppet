@@ -162,6 +162,39 @@ class compbox {
                       Package['sr.comp.http']]
     }
 
+    # nwatchlive
+    vcsrepo { '/var/www/nwatchlive':
+        ensure   => $vcs_ensure,
+        provider => git,
+        source   => 'https://github.com/prophile/nwatchlive',
+        owner    => 'www-data',
+        require  => File['/var/www']
+    } ~>
+    exec { 'build nwatchlive':
+        command => '/usr/bin/npm install',
+        cwd     => '/var/www/nwatchlive',
+        creates => '/var/www/nwatchlive/node_modules',
+        user    => 'www-data',
+        require => Package['npm']
+    }
+    file { '/var/www/comp-services.js':
+        ensure => file,
+        source => 'puppet:///modules/compbox/comp-services.js',
+        owner  => 'www-data'
+    }
+    file { '/etc/init.d/nwatchlive':
+        ensure => file,
+        source => 'puppet:///modules/compbox/service-nwatchlive',
+        mode   => '0755'
+    }
+    service { 'nwatchlive':
+        ensure    => running,
+        require   => File['/usr/local/bin/node'],
+        subscribe => [Exec['build nwatchlive'],
+                      File['/var/www/comp-services.js'],
+                      File['/etc/init.d/nwatchlive']]
+    }
+
     # Nginx configuration
     file { '/etc/nginx/sites-enabled/default':
         ensure  => absent,

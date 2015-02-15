@@ -1,0 +1,43 @@
+#!/bin/bash
+start() {
+    cd /var/www/nwatchlive
+    sudo -u www-data node main.js --port=5002 /var/www/comp-services.js services.default.js &
+    echo $! > /var/run/nwatchlive.pid
+}
+stop() {
+    if [ -f /var/run/nwatchlive.pid ]; then
+        kill $(cat /var/run/nwatchlive.pid);
+    fi
+}
+status() {
+    if [ ! -f /var/run/nwatchlive.pid ]; then
+        echo "nwatchlive is not running"
+        exit 1
+    else
+        if kill -0 $(cat /var/run/nwatchlive.pid); then
+            echo "nwatchlive is running"
+            exit 0
+        else
+            echo "nwatchlive is not running"
+            exit 1
+        fi
+    fi
+}
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        status
+        ;;
+  restart|reload)
+        stop
+        start
+        ;;
+  *)
+        echo "Usage: $0 {start|stop|restart|reload|status}"
+        exit 1
+esac

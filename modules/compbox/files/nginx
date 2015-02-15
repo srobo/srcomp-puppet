@@ -20,6 +20,15 @@ server {
         return 301 /stream;
     }
 
+    location = /monitor {
+        return 301 /monitor/;
+    }
+
+    location /monitor/ {
+        proxy_pass http://localhost:5002/;
+        proxy_buffering off;
+    }
+
     location /comp-api {
         proxy_pass http://localhost:5112;
     }
