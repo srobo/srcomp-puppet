@@ -131,7 +131,8 @@ class compbox {
         ensure    => running,
         subscribe => [Exec['build stream'],
                       File['/var/www/stream/config.coffee'],
-                      File['/etc/init.d/srcomp-stream']]
+                      File['/etc/init.d/srcomp-stream'],
+                      Service['srcomp-api']] # Subscribe to the API to get config changes
     }
 
     # API
