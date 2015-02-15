@@ -52,7 +52,7 @@ class compbox {
     # Screens and stream
     package { ['nodejs', 'npm']:
         ensure => present
-    } ~>
+    } ->
     exec { 'install bower':
         command => '/usr/bin/npm install -g bower --config.interactive=false',
         creates => '/usr/local/bin/bower'
@@ -87,10 +87,33 @@ class compbox {
     exec { 'build screens':
         command     => '/usr/local/bin/bower install',
         cwd         => '/var/www/screens',
-        creates     => '/var/www/screens/bower_components',
         environment => 'HOME=/var/www',
         user        => 'www-data',
         require     => Exec['install bower']
+    } ~>
+    exec { 'compile screens':
+        command     => '/usr/bin/python /var/www/generate_screens.py',
+        subscribe   => File['/var/www/generate_screens.py'],
+        require     => [Package['python-lxml'],
+                        File['/var/www/html']],
+        user        => 'www-data'
+    }
+
+    file { '/var/www/html':
+        ensure  => directory,
+        owner   => 'www-data',
+        mode    => '0755',
+        require => File['/var/www']
+    }
+
+    package { 'python-lxml':
+        ensure => present
+    }
+
+    file { '/var/www/generate_screens.py':
+        ensure => file,
+        source => 'puppet:///modules/compbox/generate_screens.py',
+        owner  => 'www-data'
     }
 
     # Compstate
@@ -112,7 +135,6 @@ class compbox {
     exec { 'build stream':
         command  => '/usr/bin/npm install',
         cwd      => '/var/www/stream',
-        creates  => '/var/www/stream/node_modules',
         user     => 'www-data',
         require  => Package['npm']
     }
@@ -173,7 +195,6 @@ class compbox {
     exec { 'build nwatchlive':
         command => '/usr/bin/npm install',
         cwd     => '/var/www/nwatchlive',
-        creates => '/var/www/nwatchlive/node_modules',
         user    => 'www-data',
         require => Package['npm']
     }

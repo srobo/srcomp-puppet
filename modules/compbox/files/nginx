@@ -3,12 +3,12 @@ server {
     listen [::]:80 default_server ipv6only=on;
 
     index outside.html;
-    root /var/www;
+    root /var/www/html;
 
     server_name compbox;
 
     location / {
-        root /var/www/screens;
+        root /var/www/html;
     }
 
     location = /stream {
