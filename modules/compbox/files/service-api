@@ -1,0 +1,42 @@
+#!/bin/bash
+start() {
+    sudo -u www-data gunicorn -c /var/www/compapi.wsgi sr.comp.http:app &
+    echo $! > /var/run/srcomp-api.pid
+}
+stop() {
+    if [ -f /var/run/srcomp-api.pid ]; then
+        kill $(cat /var/run/srcomp-api.pid);
+    fi
+}
+status() {
+    if [ ! -f /var/run/srcomp-api.pid ]; then
+        echo "API is not running"
+        exit 1
+    else
+        if kill -0 $(cat /var/run/srcomp-api.pid); then
+            echo "API is running"
+            exit 0
+        else
+            echo "API is not running"
+            exit 1
+        fi
+    fi
+}
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        status
+        ;;
+  restart|reload)
+        stop
+        start
+        ;;
+  *)
+        echo "Usage: $0 {start|stop|restart|reload|status}"
+        exit 1
+esac

@@ -1,6 +1,7 @@
 class compbox {
-    $comp_source = 'git://studentrobotics.org'
-    $compstate   = 'git://studentrobotics.org/comp/sr2015-comp.git'
+    $comp_source    = 'git://studentrobotics.org'
+    $compstate      = 'git://studentrobotics.org/comp/sr2015-comp.git'
+    $compstate_path = '/srv/state'
 
     $track_source = false
 
@@ -40,11 +41,6 @@ class compbox {
         provider => 'pip',
         source   => "git+$comp_source/comp/srcomp-cli.git",
         require  => Package['sr.comp']
-    }
-    package { 'gunicorn':
-        ensure   => present,
-        provider => 'pip',
-        require  => Exec['install pip']
     }
 
     # Yaml loading acceleration
@@ -98,7 +94,7 @@ class compbox {
     }
 
     # Compstate
-    vcsrepo { '/srv/state':
+    vcsrepo { $compstate_path:
         ensure   => present,
         provider => git,
         source   => $compstate,
@@ -136,6 +132,33 @@ class compbox {
         subscribe => [Exec['build stream'],
                       File['/var/www/stream/config.coffee'],
                       File['/etc/init.d/srcomp-stream']]
+    }
+
+    # API
+    package { 'gunicorn':
+        ensure   => present,
+        provider => 'pip',
+        require  => Exec['install pip']
+    }
+    file { '/var/www/compapi.wsgi':
+        ensure  => file,
+        content => template('compbox/api-wsgi.cfg.erb'),
+        require => File['/var/www']
+    }
+    file { '/etc/init.d/srcomp-api':
+        ensure => file,
+        source => 'puppet:///modules/compbox/service-api',
+        mode   => '0755'
+    }
+    service { 'srcomp-api':
+        ensure    => running,
+        require   => [Package['gunicorn'],
+                      VCSRepo[$compstate_path]],
+        subscribe => [File['/var/www/compapi.wsgi'],
+                      File['/etc/init.d/srcomp-api'],
+                      Package['sr.comp.ranker'],
+                      Package['sr.comp'],
+                      Package['sr.comp.http']]
     }
 
     # Nginx configuration
