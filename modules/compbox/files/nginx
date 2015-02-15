@@ -10,5 +10,13 @@ server {
     location / {
         root /var/www/screens;
     }
+
+    location /stream {
+        proxy_pass http://localhost:5001/;
+    }
+
+    location /comp-api {
+        proxy_pass http://localhost:5112;
+    }
 }
 
