@@ -33,6 +33,11 @@ class compbox {
         source   => "$comp_source/comp/srcomp-cli.git",
         require  => Package['sr.comp']
     }
+    package { 'gunicorn':
+        ensure   => present,
+        provider => 'pip',
+        require  => Exec['install pip']
+    }
 
     # Yaml loading acceleration
     package { 'libyaml-dev':
@@ -45,13 +50,61 @@ class compbox {
         ensure => present
     } ~>
     exec { 'install bower':
-        command     => '/usr/bin/npm install -g bower',
-        refreshonly => true
+        command => '/usr/bin/npm install -g bower --config.interactive=false',
+        creates => '/usr/local/bin/bower'
+    }
+
+    # Fix Ubuntu's wacky node path
+    file { '/usr/local/bin/node':
+        ensure  => link,
+        target  => '/usr/bin/nodejs',
+        mode    => '0755',
+        require => Package['nodejs'],
+        before  => Exec['install bower']
     }
 
     # Main webserver
     package { 'nginx':
         ensure => present
+    }
+
+    # Screens
+    file { '/var/www':
+        ensure => directory,
+        owner  => 'www-data',
+        mode   => '0755'
+    } ->
+    vcsrepo { "/var/www/screens":
+        ensure   => latest,
+        provider => git,
+        source   => "git://studentrobotics.org/comp/srcomp-screens.git",
+        owner    => 'www-data'
+    } ~>
+    exec { 'build screens':
+        command     => '/usr/local/bin/bower install',
+        cwd         => '/var/www/screens',
+        creates     => '/var/www/screens/bower_components',
+        environment => 'HOME=/var/www',
+        user        => 'www-data',
+        require     => Exec['install bower']
+    }
+
+    file { '/etc/nginx/sites-enabled/default':
+        ensure  => absent,
+        require => Package['nginx'],
+        notify  => Service['nginx']
+    }
+
+    file { '/etc/nginx/sites-enabled/compbox':
+        ensure  => file,
+        require => Package['nginx'],
+        source  => 'puppet:///modules/compbox/nginx',
+        notify  => Service['nginx']
+    }
+
+    service { 'nginx':
+        ensure  => running,
+        require => Package['nginx']
     }
 }
 

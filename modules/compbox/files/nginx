@@ -1,0 +1,14 @@
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server ipv6only=on;
+
+    index outside.html;
+    root /var/www;
+
+    server_name compbox;
+
+    location / {
+        root /var/www/screens;
+    }
+}
+
