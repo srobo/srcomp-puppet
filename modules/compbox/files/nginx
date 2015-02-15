@@ -13,6 +13,7 @@ server {
 
     location = /stream {
         proxy_pass http://localhost:5001/;
+        proxy_buffering off;
     }
 
     location = /stream/ {
