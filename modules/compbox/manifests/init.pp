@@ -1,6 +1,14 @@
 class compbox {
-    $comp_source = 'git+git://studentrobotics.org'
+    $comp_source = 'git://studentrobotics.org'
     $comp_user = 'vagrant'
+
+    $track_source = false
+
+    if $track_source {
+      $vcs_ensure = 'latest'
+    } else {
+      $vcs_ensure = 'present'
+    }
 
     package { ['git',
                'python-setuptools',
@@ -13,24 +21,24 @@ class compbox {
         creates => '/usr/local/bin/pip'
     } ->
     package { 'sr.comp.ranker':
-        ensure   => latest,
+        ensure   => $vcs_ensure,
         provider => 'pip',
-        source   => "$comp_source/comp/ranker.git"
+        source   => "git+$comp_source/comp/ranker.git"
     } ->
     package { 'sr.comp':
-        ensure   => latest,
+        ensure   => $vcs_ensure,
         provider => 'pip',
-        source   => "$comp_source/comp/srcomp.git"
+        source   => "git+$comp_source/comp/srcomp.git"
     } ->
     package { 'sr.comp.http':
-        ensure   => latest,
+        ensure   => $vcs_ensure,
         provider => 'pip',
-        source   => "$comp_source/comp/srcomp-http.git"
+        source   => "git+$comp_source/comp/srcomp-http.git"
     }
     package { 'sr.comp.cli':
-        ensure   => latest,
+        ensure   => $vcs_ensure,
         provider => 'pip',
-        source   => "$comp_source/comp/srcomp-cli.git",
+        source   => "git+$comp_source/comp/srcomp-cli.git",
         require  => Package['sr.comp']
     }
     package { 'gunicorn':
@@ -75,9 +83,9 @@ class compbox {
         mode   => '0755'
     } ->
     vcsrepo { "/var/www/screens":
-        ensure   => latest,
+        ensure   => $vcs_ensure,
         provider => git,
-        source   => "git://studentrobotics.org/comp/srcomp-screens.git",
+        source   => "$comp_source/comp/srcomp-screens.git",
         owner    => 'www-data'
     } ~>
     exec { 'build screens':
@@ -89,6 +97,40 @@ class compbox {
         require     => Exec['install bower']
     }
 
+    # Stream
+    vcsrepo { "/var/www/stream":
+        ensure   => $vcs_ensure,
+        provider => git,
+        source   => "$comp_source/comp/srcomp-stream.git",
+        owner    => 'www-data',
+        require  => File['/var/www']
+    } ~>
+    exec { 'build stream':
+        command  => '/usr/bin/npm install',
+        cwd      => '/var/www/stream',
+        creates  => '/var/www/stream/node_modules',
+        user     => 'www-data',
+        require  => Package['npm']
+    }
+    file { '/var/www/stream/config.coffee':
+        ensure  => file,
+        source  => 'puppet:///modules/compbox/stream-config.coffee',
+        owner   => 'www-data',
+        require => VCSRepo['/var/www/stream']
+    }
+    file { '/etc/init.d/srcomp-stream':
+        ensure => file,
+        source => 'puppet:///modules/compbox/service-stream',
+        mode   => '0755'
+    }
+    service { 'srcomp-stream':
+        ensure    => running,
+        subscribe => [Exec['build stream'],
+                      File['/var/www/stream/config.coffee'],
+                      File['/etc/init.d/srcomp-stream']]
+    }
+
+    # Nginx configuration
     file { '/etc/nginx/sites-enabled/default':
         ensure  => absent,
         require => Package['nginx'],
