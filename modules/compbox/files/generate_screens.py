@@ -12,6 +12,15 @@ FILES = ('arena.html',
          'outside.html',
          'shepherding.html')
 
+shutil.rmtree(os.path.join(TARGET, 'components'),
+              ignore_errors=True)
+shutil.copytree(os.path.join(SOURCE, 'components'),
+                os.path.join(TARGET, 'components'))
+shutil.rmtree(os.path.join(TARGET, 'bower_components'),
+              ignore_errors=True)
+shutil.copytree(os.path.join(SOURCE, 'bower_components'),
+                os.path.join(TARGET, 'bower_components'))
+
 for fn in FILES:
     dst = os.path.join(TARGET, fn)
     src = os.path.join(SOURCE, fn)
@@ -25,12 +34,3 @@ for fn in FILES:
                               '--strip',
                               '-o', fn),
                           cwd=TARGET)
-
-shutil.rmtree(os.path.join(TARGET, 'components'),
-              ignore_errors=True)
-shutil.copytree(os.path.join(SOURCE, 'components'),
-                os.path.join(TARGET, 'components'))
-shutil.rmtree(os.path.join(TARGET, 'bower_components'),
-              ignore_errors=True)
-shutil.copytree(os.path.join(SOURCE, 'bower_components'),
-                os.path.join(TARGET, 'bower_components'))
