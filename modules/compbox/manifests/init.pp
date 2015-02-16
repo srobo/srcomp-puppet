@@ -92,12 +92,14 @@ class compbox {
         command     => '/usr/local/bin/bower install',
         cwd         => '/var/www/screens',
         environment => 'HOME=/var/www',
+        refreshonly => true,
         user        => 'www-data',
         require     => Exec['install bower']
     } ~>
     exec { 'compile screens':
         command     => '/usr/bin/python /var/www/generate_screens.py',
         subscribe   => File['/var/www/generate_screens.py'],
+        refreshonly => true,
         require     => [Package['python-lxml'],
                         File['/var/www/html'],
                         Exec['install vulcanize']],
@@ -138,10 +140,11 @@ class compbox {
         require  => File['/var/www']
     } ~>
     exec { 'build stream':
-        command  => '/usr/bin/npm install',
-        cwd      => '/var/www/stream',
-        user     => 'www-data',
-        require  => Package['npm']
+        command     => '/usr/bin/npm install',
+        cwd         => '/var/www/stream',
+        user        => 'www-data',
+        refreshonly => true,
+        require     => Package['npm']
     }
     file { '/var/www/stream/config.coffee':
         ensure  => file,
@@ -198,10 +201,11 @@ class compbox {
         require  => File['/var/www']
     } ~>
     exec { 'build nwatchlive':
-        command => '/usr/bin/npm install',
-        cwd     => '/var/www/nwatchlive',
-        user    => 'www-data',
-        require => Package['npm']
+        command     => '/usr/bin/npm install',
+        cwd         => '/var/www/nwatchlive',
+        user        => 'www-data',
+        refreshonly => true,
+        require     => Package['npm']
     }
     file { '/var/www/comp-services.js':
         ensure => file,
