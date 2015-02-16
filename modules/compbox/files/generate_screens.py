@@ -2,6 +2,7 @@ import lxml.html
 import tempfile
 import os.path
 import shutil
+import subprocess
 
 TARGET = '/var/www/html'
 SOURCE = '/var/www/screens'
@@ -19,6 +20,11 @@ for fn in FILES:
         comp.attrib['streamurl'] = '/stream'
         comp.attrib['apiurl'] = '/comp-api'
     tree.write(dst, encoding='utf-8', method='html')
+    subprocess.check_call(('vulcanize', fn,
+                              '--inline',
+                              '--strip',
+                              '-o', fn),
+                          cwd=TARGET)
 
 shutil.rmtree(os.path.join(TARGET, 'components'),
               ignore_errors=True)

@@ -53,9 +53,13 @@ class compbox {
     package { ['nodejs', 'npm']:
         ensure => present
     } ->
-    exec { 'install bower':
+    exec {
+      'install bower':
         command => '/usr/bin/npm install -g bower --config.interactive=false',
-        creates => '/usr/local/bin/bower'
+        creates => '/usr/local/bin/bower';
+      'install vulcanize':
+        command => '/usr/bin/npm install -g vulcanize',
+        creates => '/usr/local/bin/vulcanize';
     }
 
     # Fix Ubuntu's wacky node path
@@ -95,7 +99,8 @@ class compbox {
         command     => '/usr/bin/python /var/www/generate_screens.py',
         subscribe   => File['/var/www/generate_screens.py'],
         require     => [Package['python-lxml'],
-                        File['/var/www/html']],
+                        File['/var/www/html'],
+                        Exec['install vulcanize']],
         user        => 'www-data'
     }
 
