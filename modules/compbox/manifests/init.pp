@@ -159,6 +159,7 @@ class compbox {
     }
     service { 'srcomp-stream':
         ensure    => running,
+        require   => File['/usr/local/bin/node'],
         subscribe => [Exec['build stream'],
                       File['/var/www/stream/config.coffee'],
                       File['/etc/init.d/srcomp-stream'],
@@ -208,9 +209,10 @@ class compbox {
         require     => Package['npm']
     }
     file { '/var/www/comp-services.js':
-        ensure => file,
-        source => 'puppet:///modules/compbox/comp-services.js',
-        owner  => 'www-data'
+        ensure  => file,
+        source  => 'puppet:///modules/compbox/comp-services.js',
+        owner   => 'www-data',
+        require => File['/var/www']
     }
     file { '/etc/init.d/nwatchlive':
         ensure => file,
