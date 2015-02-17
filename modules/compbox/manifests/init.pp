@@ -129,6 +129,14 @@ class compbox {
         provider => git,
         source   => $compstate,
         owner    => 'www-data'
+    } ->
+    augeas { 'set compstate for P2D':
+        lens    => 'Puppet.lns',
+        incl    => "$compstate_path/.git/config",
+        changes => ["set core/sharedRepository 'world'",
+                    "set receive/denyCurrentBranch 'updateInstead'",
+                    "set user/name 'Student Robotics Competition Software SIG'",
+                    "set user/email 'srobo-devel@googlegroups.com'"]
     }
 
     # Stream
