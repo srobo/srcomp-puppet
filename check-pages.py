@@ -19,6 +19,7 @@ args = parser.parse_args()
 html_page = urllib2.urlopen(args.url)
 soup = BeautifulSoup(html_page)
 
+fail_count = 0
 for link in soup.findAll('a'):
     desc = link.contents[0]
     href = link.get('href')
@@ -28,5 +29,8 @@ for link in soup.findAll('a'):
         urllib2.urlopen(args.url + href)
     except Exception as e:
         print(e)
+        fail_count += 1
     else:
         print("PASS")
+
+exit(fail_count)
