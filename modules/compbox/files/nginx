@@ -2,7 +2,7 @@ server {
     listen 80 default_server;
     listen [::]:80 default_server ipv6only=on;
 
-    index outside.html;
+    index compbox-index.html;
     root /var/www/html;
 
     server_name compbox;

@@ -111,6 +111,11 @@ class compbox {
         owner   => 'www-data',
         mode    => '0755',
         require => File['/var/www']
+    } ->
+    file { '/var/www/html/compbox-index.html':
+        ensure  => file,
+        source  => 'puppet:///modules/compbox/compbox-index.html',
+        owner   => 'www-data',
     }
 
     package { 'python-lxml':
