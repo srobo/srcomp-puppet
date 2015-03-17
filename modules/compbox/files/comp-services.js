@@ -53,4 +53,4 @@ addWatcher('upstream sync', function(ack, err) {
     });
 });
 
-addWatcher('IDE', watchHTTP(mainWebsite + '/ide/'));
+addWatcher('IDE', watchHTTP(mainWebsite + '/ide/control.php/info/about'));
