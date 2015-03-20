@@ -8,6 +8,8 @@ import sys
 import urllib2
 
 DEFAULT_URL = "http://localhost:8080"
+FAIL = '\033[91m'
+ENDC = '\033[0m'
 
 parser = argparse.ArgumentParser()
 parser.add_argument("url",
@@ -28,7 +30,7 @@ for link in soup.findAll('a'):
     try:
         urllib2.urlopen(args.url + href)
     except Exception as e:
-        print(e)
+        print(FAIL, e, ENDC)
         fail_count += 1
     else:
         print("PASS")
