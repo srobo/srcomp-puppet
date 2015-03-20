@@ -18,7 +18,12 @@ parser.add_argument("url",
                     help="The root url of the vm to check (default: {0})".format(DEFAULT_URL))
 args = parser.parse_args()
 
-html_page = urllib2.urlopen(args.url)
+try:
+    html_page = urllib2.urlopen(args.url)
+except Exception as e:
+    print(FAIL, "Failed to load index page:", e, ENDC)
+    exit(1)
+
 soup = BeautifulSoup(html_page)
 
 fail_count = 0
