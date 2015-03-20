@@ -10,4 +10,3 @@ Vagrant.configure("2") do |config|
         puppet.module_path    = "modules"
     end
 end
-
