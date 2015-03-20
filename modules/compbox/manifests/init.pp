@@ -1,3 +1,4 @@
+# Install and configure the services running on the compbox
 class compbox {
     $comp_source    = 'git://studentrobotics.org'
     $compstate      = 'git://studentrobotics.org/comp/sr2015-comp.git'
@@ -6,9 +7,9 @@ class compbox {
     $track_source = false
 
     if $track_source {
-      $vcs_ensure = 'latest'
+        $vcs_ensure = 'latest'
     } else {
-      $vcs_ensure = 'present'
+        $vcs_ensure = 'present'
     }
 
     package { ['git',
@@ -17,29 +18,30 @@ class compbox {
                'python-requests']:
         ensure => present
     } ->
-    exec { 'install pip': # Ubuntu's system pip break as soon as sr.comp.cli is installed
+    # Ubuntu's system pip break as soon as sr.comp.cli is installed
+    exec { 'install pip':
         command => '/usr/bin/easy_install pip',
         creates => '/usr/local/bin/pip'
     } ->
     package { 'sr.comp.ranker':
         ensure   => $vcs_ensure,
         provider => 'pip',
-        source   => "git+$comp_source/comp/ranker.git"
+        source   => "git+${comp_source}/comp/ranker.git"
     } ->
     package { 'sr.comp':
         ensure   => $vcs_ensure,
         provider => 'pip',
-        source   => "git+$comp_source/comp/srcomp.git"
+        source   => "git+${comp_source}/comp/srcomp.git"
     } ->
     package { 'sr.comp.http':
         ensure   => $vcs_ensure,
         provider => 'pip',
-        source   => "git+$comp_source/comp/srcomp-http.git"
+        source   => "git+${comp_source}/comp/srcomp-http.git"
     }
     package { 'sr.comp.cli':
         ensure   => $vcs_ensure,
         provider => 'pip',
-        source   => "git+$comp_source/comp/srcomp-cli.git",
+        source   => "git+${comp_source}/comp/srcomp-cli.git",
         require  => Package['sr.comp']
     }
 
@@ -82,10 +84,10 @@ class compbox {
         owner  => 'www-data',
         mode   => '0755'
     } ->
-    vcsrepo { "/var/www/screens":
+    vcsrepo { '/var/www/screens':
         ensure   => $vcs_ensure,
         provider => git,
-        source   => "$comp_source/comp/srcomp-screens.git",
+        source   => "${comp_source}/comp/srcomp-screens.git",
         owner    => 'www-data'
     } ~>
     exec { 'build screens':
@@ -137,18 +139,18 @@ class compbox {
     } ->
     augeas { 'set compstate for P2D':
         lens    => 'Puppet.lns',
-        incl    => "$compstate_path/.git/config",
-        changes => ["set core/sharedRepository 'world'",
-                    "set receive/denyCurrentBranch 'updateInstead'",
-                    "set user/name 'Student Robotics Competition Software SIG'",
-                    "set user/email 'srobo-devel@googlegroups.com'"]
+        incl    => "${compstate_path}/.git/config",
+        changes => ['set core/sharedRepository "world"',
+                    'set receive/denyCurrentBranch "updateInstead"',
+                    'set user/name "Student Robotics Competition Software SIG"',
+                    'set user/email "srobo-devel@googlegroups.com"']
     }
 
     # Stream
-    vcsrepo { "/var/www/stream":
+    vcsrepo { '/var/www/stream':
         ensure   => $vcs_ensure,
         provider => git,
-        source   => "$comp_source/comp/srcomp-stream.git",
+        source   => "${comp_source}/comp/srcomp-stream.git",
         owner    => 'www-data',
         require  => File['/var/www']
     } ~>
@@ -176,7 +178,8 @@ class compbox {
         subscribe => [Exec['build stream'],
                       File['/var/www/stream/config.coffee'],
                       File['/etc/init.d/srcomp-stream'],
-                      Service['srcomp-api']] # Subscribe to the API to get config changes
+                      # Subscribe to the API to get config changes
+                      Service['srcomp-api']]
     }
 
     # API
