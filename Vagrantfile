@@ -3,6 +3,8 @@ Vagrant.configure("2") do |config|
     config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/utopic/current/utopic-server-cloudimg-amd64-vagrant-disk1.box"
 
     config.vm.network "forwarded_port", guest: 80, host: 8080
+    config.vm.hostname = "compbox-2015"
+
     config.ssh.private_key_path = ['~/.vagrant.d/insecure_private_key', '~/.ssh/id_rsa']
 
     config.vm.provision "puppet" do |puppet|
