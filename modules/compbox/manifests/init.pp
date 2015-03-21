@@ -261,4 +261,31 @@ class compbox {
         ensure  => running,
         require => Package['nginx']
     }
+
+    # Login configuration
+    file { '/home/vagrant/.ssh/authorized_keys':
+        ensure  => file,
+        mode    => '0600',
+        owner   => 'vagrant',
+        source  => 'puppet:///modules/compbox/vagrant-authorized_keys',
+    }
+    augeas { 'sshd_config':
+        context => '/files/etc/ssh/sshd_config',
+        changes => [
+            # deny root logins
+            'set PermitRootLogin no',
+            # deny logins using passwords
+            'set PasswordAuthentication no',
+        ],
+        notify => Service['sshd'],
+    }
+    service { 'sshd':
+        name    => $osfamily ? {
+            Debian  => 'ssh',
+            default => 'sshd',
+        },
+        require => Augeas['sshd_config'],
+        enable  => true,
+        ensure  => running,
+    }
 }
