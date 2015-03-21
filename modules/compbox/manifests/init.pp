@@ -282,15 +282,15 @@ class compbox {
             # deny logins using passwords
             'set PasswordAuthentication no',
         ],
-        notify => Service['sshd'],
+        notify  => Service['sshd'],
     }
     service { 'sshd':
-        name    => $osfamily ? {
+        ensure  => running,
+        name    => $::osfamily ? {
             Debian  => 'ssh',
             default => 'sshd',
         },
-        require => Augeas['sshd_config'],
         enable  => true,
-        ensure  => running,
+        require => Augeas['sshd_config'],
     }
 }
