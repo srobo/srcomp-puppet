@@ -17,6 +17,74 @@ class compbox {
         before  => [Package['libyaml-dev'],Package['npm'],Package['nodejs']],
     }
 
+    # A user for shelling in to update the compstate
+    user { 'srcomp':
+        ensure      => present,
+        comment     => 'Competition Software Owner',
+        gid         => 'users',
+        managehome  => true,
+        shell       => '/bin/bash',
+    }
+
+    $srcomp_home_dir = '/home/srcomp'
+    $ref_compstate = "${srcomp_home_dir}/compstate.git"
+    $srcomp_ssh_dir = "${srcomp_home_dir}/.ssh"
+
+    file { $srcomp_ssh_dir:
+        ensure  => directory,
+        owner   => 'srcomp',
+        group   => 'users',
+        mode    => '0700',
+        require => User['srcomp'],
+    }
+
+    file { "${srcomp_ssh_dir}/authorized_keys":
+        ensure  => file,
+        owner   => 'srcomp',
+        group   => 'users',
+        mode    => '0600',
+        # TODO: this should probably end up in hiera
+        source  => 'puppet:///modules/compbox/srcomp-authorized_keys',
+        require => [User['srcomp'],File[$srcomp_ssh_dir]],
+    }
+
+    # A local srcomp-http checkout so we can use the update script.
+    # It should probably get installed as a CLI endpoint at some point.
+    $http_dir = "${srcomp_home_dir}/srcomp-http"
+    vcsrepo { $http_dir:
+        ensure   => present,
+        provider => git,
+        source   => "${comp_source}/comp/srcomp-http.git"
+        user     => 'srcomp',
+    }
+
+    # The location of the live compstate.
+    $compstate_dir = $compstate_path
+
+    # The location of the 'virtualenv' in which the the srcomp things
+    # are installed. Not really a virtualenv on this machine of course.
+    $venv_dir = '/usr'
+
+    # Update script, configured for direct use (via the above two variables)
+    file { "${srcomp_home_dir}/update":
+        ensure  => file,
+        owner   => 'srcomp',
+        group   => 'users',
+        # Only this user can run it
+        mode    => '0744',
+        # Uses $compstate_dir, $http_dir, $venv_dir
+        content => template('compbox/srcomp-update.erb'),
+        require => [Vcsrepo[$http_dir],User['srcomp']],
+    }
+
+    vcsrepo { $ref_compstate:
+        ensure    => bare,
+        provider  => git,
+        source    => $compstate,
+        user      => 'srcomp',
+        require   => User['srcomp'],
+    }
+
     package { ['git',
                'python-setuptools',
                'python-dev',
@@ -139,16 +207,26 @@ class compbox {
     vcsrepo { $compstate_path:
         ensure   => present,
         provider => git,
-        source   => $compstate,
-        owner    => 'www-data'
-    } ->
-    augeas { 'set compstate for P2D':
-        lens    => 'Puppet.lns',
-        incl    => "${compstate_path}/.git/config",
-        changes => ['set core/sharedRepository "world"',
-                    'set receive/denyCurrentBranch "updateInstead"',
-                    'set user/name "Student Robotics Competition Software SIG"',
-                    'set user/email "srobo-devel@googlegroups.com"']
+        source   => $ref_compstate,
+        group    => 'www-data',
+        owner    => 'srcomp',
+        require  => [User['srcomp'],Vcsrepo[$ref_compstate]],
+    }
+    # Update trigger and lock files
+    file { "${compstate_path}/.update-pls":
+        ensure  => present,
+        owner   => 'srcomp',
+        group   => 'www-data',
+        mode    => '0644',
+        require => Vcsrepo[$compstate_path],
+    }
+    # The lock file is writable by apache so it can get a lock on it
+    file { "${compstate_path}/.update-lock":
+        ensure  => present,
+        owner   => 'srcomp',
+        group   => 'www-data',
+        mode    => '0664',
+        require => Vcsrepo[$compstate_path],
     }
 
     # Stream
