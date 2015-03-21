@@ -12,6 +12,11 @@ class compbox {
         $vcs_ensure = 'present'
     }
 
+    exec { 'update package lists':
+        command => '/usr/bin/apt-get update',
+        before  => [Package['libyaml-dev'],Package['npm'],Package['nodejs']],
+    }
+
     package { ['git',
                'python-setuptools',
                'python-dev',
