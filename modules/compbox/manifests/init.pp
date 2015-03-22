@@ -12,6 +12,27 @@ class compbox {
         $vcs_ensure = 'present'
     }
 
+    define initd_service($command,
+                         $dir = undef,
+                         $subs = []) {
+        $service_name = $title
+        $start_dir = $dir
+        $start_command = $command
+        $service_file = "/etc/init.d/${service_name}"
+        file { $service_file:
+            ensure  => file,
+            content => template('compbox/service.erb'),
+            mode    => '0755',
+        }
+        # TODO: require => File[$start_dir]?
+
+        service { $service_name:
+            ensure    => running,
+            enable    => true,
+            subscribe => union([File[$service_file]], $subs),
+        }
+    }
+
     exec { 'update package lists':
         command => '/usr/bin/apt-get update',
         before  => [Package['libyaml-dev'],Package['npm'],Package['nodejs']],
@@ -250,20 +271,14 @@ class compbox {
         owner   => 'www-data',
         require => VCSRepo['/var/www/stream']
     }
-    file { '/etc/init.d/srcomp-stream':
-        ensure => file,
-        source => 'puppet:///modules/compbox/service-stream',
-        mode   => '0755'
-    }
-    service { 'srcomp-stream':
-        ensure    => running,
-        enable    => true,
-        require   => File['/usr/local/bin/node'],
-        subscribe => [Exec['build stream'],
-                      File['/var/www/stream/config.coffee'],
-                      File['/etc/init.d/srcomp-stream'],
-                      # Subscribe to the API to get config changes
-                      Service['srcomp-api']]
+    initd_service { 'srcomp-stream':
+        dir     => '/var/www/stream',
+        command => 'sudo -u www-data node main.js &',
+        require => File['/usr/local/bin/node'],
+        subs    => [Exec['build stream'],
+                    File['/var/www/stream/config.coffee'],
+                    # Subscribe to the API to get config changes
+                    Service['srcomp-api']]
     }
 
     # API
@@ -277,21 +292,14 @@ class compbox {
         content => template('compbox/api-wsgi.cfg.erb'),
         require => File['/var/www']
     }
-    file { '/etc/init.d/srcomp-api':
-        ensure => file,
-        source => 'puppet:///modules/compbox/service-api',
-        mode   => '0755'
-    }
-    service { 'srcomp-api':
-        ensure    => running,
-        enable    => true,
-        require   => [Package['gunicorn'],
-                      VCSRepo[$compstate_path]],
-        subscribe => [File['/var/www/compapi.wsgi'],
-                      File['/etc/init.d/srcomp-api'],
-                      Package['sr.comp.ranker'],
-                      Package['sr.comp'],
-                      Package['sr.comp.http']]
+    initd_service { 'srcomp-api':
+        command => 'sudo -u www-data gunicorn -c /var/www/compapi.wsgi sr.comp.http:app &',
+        require => [Package['gunicorn'],
+                    VCSRepo[$compstate_path]],
+        subs    => [File['/var/www/compapi.wsgi'],
+                    Package['sr.comp.ranker'],
+                    Package['sr.comp'],
+                    Package['sr.comp.http']]
     }
 
     # nwatchlive
@@ -315,18 +323,13 @@ class compbox {
         owner   => 'www-data',
         require => File['/var/www']
     }
-    file { '/etc/init.d/nwatchlive':
-        ensure => file,
-        source => 'puppet:///modules/compbox/service-nwatchlive',
-        mode   => '0755'
-    }
-    service { 'nwatchlive':
-        ensure    => running,
-        enable    => true,
-        require   => File['/usr/local/bin/node'],
-        subscribe => [Exec['build nwatchlive'],
-                      File['/var/www/comp-services.js'],
-                      File['/etc/init.d/nwatchlive']]
+    initd_service { 'nwatchlive':
+        dir     => '/var/www/nwatchlive',
+        command => 'sudo -u www-data node main.js --port=5002 \
+                    /var/www/comp-services.js services.default.js &',
+        require => File['/usr/local/bin/node'],
+        subs    => [Exec['build nwatchlive'],
+                    File['/var/www/comp-services.js']]
     }
 
     # Nginx configuration
