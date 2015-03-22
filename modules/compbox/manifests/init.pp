@@ -54,7 +54,7 @@ class compbox {
     vcsrepo { $http_dir:
         ensure   => present,
         provider => git,
-        source   => "${comp_source}/comp/srcomp-http.git"
+        source   => "${comp_source}/comp/srcomp-http.git",
         user     => 'srcomp',
     }
 
