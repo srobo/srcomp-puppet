@@ -257,6 +257,7 @@ class compbox {
     }
     service { 'srcomp-stream':
         ensure    => running,
+        enable    => true,
         require   => File['/usr/local/bin/node'],
         subscribe => [Exec['build stream'],
                       File['/var/www/stream/config.coffee'],
@@ -283,6 +284,7 @@ class compbox {
     }
     service { 'srcomp-api':
         ensure    => running,
+        enable    => true,
         require   => [Package['gunicorn'],
                       VCSRepo[$compstate_path]],
         subscribe => [File['/var/www/compapi.wsgi'],
@@ -320,6 +322,7 @@ class compbox {
     }
     service { 'nwatchlive':
         ensure    => running,
+        enable    => true,
         require   => File['/usr/local/bin/node'],
         subscribe => [Exec['build nwatchlive'],
                       File['/var/www/comp-services.js'],
@@ -342,6 +345,7 @@ class compbox {
 
     service { 'nginx':
         ensure  => running,
+        enable  => true,
         require => Package['nginx']
     }
 
