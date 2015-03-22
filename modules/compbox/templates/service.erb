@@ -5,7 +5,8 @@ start() {
     <% if @start_dir %>
         cd <%= @start_dir %>
     <% end %>
-    <%= @start_command %>
+    <% if @user %>sudo -u '<%= @user %>' \<% end %>
+    <%= @start_command %> <% if @background %>&<% end %>
     echo $! > $PID_FILE
 }
 stop() {

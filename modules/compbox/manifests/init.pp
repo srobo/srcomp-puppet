@@ -13,7 +13,9 @@ class compbox {
     }
 
     define initd_service($command,
+                         $user,
                          $dir = undef,
+                         $background = true,
                          $subs = []) {
         $service_name = $title
         $start_dir = $dir
@@ -273,7 +275,8 @@ class compbox {
     }
     initd_service { 'srcomp-stream':
         dir     => '/var/www/stream',
-        command => 'sudo -u www-data node main.js &',
+        user    => 'www-data',
+        command => 'node main.js',
         require => File['/usr/local/bin/node'],
         subs    => [Exec['build stream'],
                     File['/var/www/stream/config.coffee'],
@@ -293,7 +296,8 @@ class compbox {
         require => File['/var/www']
     }
     initd_service { 'srcomp-api':
-        command => 'sudo -u www-data gunicorn -c /var/www/compapi.wsgi sr.comp.http:app &',
+        user    => 'www-data',
+        command => 'gunicorn -c /var/www/compapi.wsgi sr.comp.http:app',
         require => [Package['gunicorn'],
                     VCSRepo[$compstate_path]],
         subs    => [File['/var/www/compapi.wsgi'],
@@ -325,8 +329,9 @@ class compbox {
     }
     initd_service { 'nwatchlive':
         dir     => '/var/www/nwatchlive',
-        command => 'sudo -u www-data node main.js --port=5002 \
-                    /var/www/comp-services.js services.default.js &',
+        user    => 'www-data',
+        command => 'node main.js --port=5002 \
+                    /var/www/comp-services.js services.default.js',
         require => File['/usr/local/bin/node'],
         subs    => [Exec['build nwatchlive'],
                     File['/var/www/comp-services.js']]
