@@ -18,6 +18,13 @@ class compbox {
                          $background = true,
                          $subs = []) {
         $service_name = $title
+
+        $log_dir = "/var/log/${service_name}"
+        file { $log_dir:
+            ensure  => directory,
+            owner   => $user,
+        }
+
         $start_dir = $dir
         $start_command = $command
         $service_file = "/etc/init.d/${service_name}"
@@ -25,6 +32,7 @@ class compbox {
             ensure  => file,
             content => template('compbox/service.erb'),
             mode    => '0755',
+            require => File[$log_dir],
         }
         # TODO: require => File[$start_dir]?
 
