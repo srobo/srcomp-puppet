@@ -5,6 +5,7 @@ Vagrant.configure("2") do |config|
     config.vm.provider "virtualbox" do |v|
         v.memory = 1024
     end
+    config.vm.network "public_network"
     config.vm.network "forwarded_port", guest: 80, host: 8080
     config.vm.hostname = "compbox-2015"
 
