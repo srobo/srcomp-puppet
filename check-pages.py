@@ -40,4 +40,6 @@ for link in soup.findAll('a'):
     else:
         print("PASS")
 
+print("You should also check that the pages can be seen from another machine!")
+
 exit(fail_count)
