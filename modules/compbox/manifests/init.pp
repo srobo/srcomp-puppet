@@ -406,4 +406,9 @@ class compbox {
         enable  => true,
         require => Augeas['sshd_config'],
     }
+
+    # NTP Server config
+    class { '::ntp':
+        udlc    => true,
+    }
 }
