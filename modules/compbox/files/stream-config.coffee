@@ -1,4 +1,3 @@
 module.exports =
-  SRCOMP: "http://localhost:5112/comp-api"
+  SRCOMP: "http://localhost/comp-api"
   WEB_PORT: 5001
-
