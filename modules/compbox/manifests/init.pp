@@ -157,7 +157,7 @@ class compbox {
     }
 
     # Screens and stream
-    package { ['nodejs', 'npm']:
+    package { ['nodejs', 'nodejs-legacy', 'npm']:
         ensure => present
     } ->
     exec {
@@ -167,15 +167,6 @@ class compbox {
       'install vulcanize':
         command => '/usr/bin/npm install -g vulcanize',
         creates => '/usr/local/bin/vulcanize';
-    }
-
-    # Fix Ubuntu's wacky node path
-    file { '/usr/local/bin/node':
-        ensure  => link,
-        target  => '/usr/bin/nodejs',
-        mode    => '0755',
-        require => Package['nodejs'],
-        before  => Exec['install bower']
     }
 
     # Main webserver
@@ -286,7 +277,7 @@ class compbox {
         dir     => '/var/www/stream',
         user    => 'www-data',
         command => 'node main.js',
-        require => File['/usr/local/bin/node'],
+        require => Package['nodejs-legacy'],
         subs    => [Exec['build stream'],
                     File['/var/www/stream/config.coffee'],
                     # Subscribe to the API to get config changes
@@ -349,7 +340,7 @@ class compbox {
         user    => 'www-data',
         command => 'node main.js --port=5002 --quiet \
                     /var/www/comp-services.js services.default.js',
-        require => File['/usr/local/bin/node'],
+        require => Package['nodejs-legacy'],
         subs    => [Exec['build nwatchlive'],
                     File['/var/www/comp-services.js']]
     }
