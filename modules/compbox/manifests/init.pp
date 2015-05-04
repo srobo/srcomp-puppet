@@ -281,7 +281,7 @@ class compbox {
         subs    => [Exec['build stream'],
                     File['/var/www/stream/config.coffee'],
                     # Subscribe to the API to get config changes
-                    Service['srcomp-api']]
+                    Service['srcomp-http']]
     }
 
     # API
@@ -290,25 +290,25 @@ class compbox {
         provider => 'pip',
         require  => Exec['install pip']
     }
-    $compapi_logging_ini = '/var/www/compapi-logging.ini'
+    $compapi_logging_ini = '/var/www/srcomp-http-logging.ini'
     file { $compapi_logging_ini:
         ensure  => file,
-        source  => 'puppet:///modules/compbox/compapi-logging.ini',
+        source  => 'puppet:///modules/compbox/srcomp-http-logging.ini',
         require => File['/var/www']
     }
-    $compapi_wsgi = '/var/www/compapi.wsgi'
+    $compapi_wsgi = '/var/www/srcomp-http.wsgi'
     file { $compapi_wsgi:
         ensure  => file,
-        content => template('compbox/api-wsgi.cfg.erb'),
+        content => template('compbox/http-wsgi.cfg.erb'),
         require => File['/var/www']
     }
-    initd_service { 'srcomp-api':
+    initd_service { 'srcomp-http':
         user    => 'www-data',
         command => "gunicorn -c ${compapi_wsgi} --log-config \
                     ${compapi_logging_ini} sr.comp.http:app",
         require => [Package['gunicorn'],
                     VCSRepo[$compstate_path]],
-        subs    => [File['/var/www/compapi.wsgi'],
+        subs    => [File[$compapi_wsgi],
                     Package['sr.comp.ranker'],
                     Package['sr.comp'],
                     Package['sr.comp.http']]
