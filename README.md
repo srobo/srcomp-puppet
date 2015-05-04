@@ -1,6 +1,7 @@
-# SRCompBox 2015
+# SRComp Puppet
 
-This is the configuration for the SR 2015 Competition VM.
+This is a puppet configuration for various SRComp related things,
+including the creation of a VM suitable for use at the competition.
 
 It's a lightweight Vagrant wrapper around a puppet config.
 
