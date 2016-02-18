@@ -1,4 +1,15 @@
 #!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          <%= @service_name %>
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     3 4 5
+# Default-Stop:      0 1 2 6
+# Short-Description: Start <%= @service_name %> at boot time
+# Description:       <%= @service_description %>
+### END INIT INFO
+
 SERVICE_NAME='<%= @service_name %>'
 PID_FILE='/var/run/<%= @service_name %>.pid'
 start() {

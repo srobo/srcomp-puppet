@@ -14,10 +14,12 @@ class compbox {
 
     define initd_service($command,
                          $user,
+                         $desc,
                          $dir = undef,
                          $background = true,
                          $subs = []) {
         $service_name = $title
+        $service_description = $desc
 
         $log_dir = "/var/log/${service_name}"
         file { $log_dir:
@@ -274,6 +276,7 @@ class compbox {
         require => VCSRepo['/var/www/stream']
     }
     initd_service { 'srcomp-stream':
+        desc    => 'Publishes a stream of events representing changes in the competition state.',
         dir     => '/var/www/stream',
         user    => 'www-data',
         command => 'node main.js',
@@ -303,6 +306,7 @@ class compbox {
         require => File['/var/www']
     }
     initd_service { 'srcomp-http':
+        desc    => 'Presents an HTTP API for accessing the competition state.',
         user    => 'www-data',
         command => "gunicorn -c ${compapi_wsgi} --log-config \
                     ${compapi_logging_ini} sr.comp.http:app",
@@ -336,6 +340,7 @@ class compbox {
         require => File['/var/www']
     }
     initd_service { 'nwatchlive':
+        desc    => 'Provides a status page for all hosted services.',
         dir     => '/var/www/nwatchlive',
         user    => 'www-data',
         command => 'node main.js --port=5002 --quiet \
