@@ -197,11 +197,11 @@ class compbox {
         require     => Exec['install bower']
     } ~>
     exec { 'compile screens':
-        command     => '/bin/rm -f /etc/screens-compiled ; \
+        command     => '/bin/rm -f /var/www/screens-compiled ; \
                         /usr/bin/python /var/www/generate_screens.py && \
-                        /usr/bin/touch /etc/screens-compiled',
+                        /usr/bin/touch /var/www/screens-compiled',
         subscribe   => File['/var/www/generate_screens.py'],
-        creates     => '/etc/screens-compiled',
+        creates     => '/var/www/screens-compiled',
         require     => [Package['python-lxml'],
                         File['/var/www/html'],
                         Exec['install vulcanize']],
