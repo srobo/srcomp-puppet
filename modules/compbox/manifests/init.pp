@@ -167,7 +167,7 @@ class compbox {
         command => '/usr/bin/npm install -g bower --config.interactive=false',
         creates => '/usr/local/bin/bower';
       'install vulcanize':
-        command => '/usr/bin/npm install -g vulcanize',
+        command => '/usr/bin/npm install -g vulcanize@0.7.11',
         creates => '/usr/local/bin/vulcanize';
     }
 
