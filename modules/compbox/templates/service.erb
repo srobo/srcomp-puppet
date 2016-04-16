@@ -2,8 +2,8 @@
 
 ### BEGIN INIT INFO
 # Provides:          <%= @service_name %>
-# Required-Start:    $remote_fs $syslog
-# Required-Stop:     $remote_fs $syslog
+# Required-Start:    $remote_fs $syslog <%= @depends_str %>
+# Required-Stop:     $remote_fs $syslog <%= @depends_str %>
 # Default-Start:     3 4 5
 # Default-Stop:      0 1 2 6
 # Short-Description: Start <%= @service_name %> at boot time

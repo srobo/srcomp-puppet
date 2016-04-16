@@ -17,6 +17,7 @@ class compbox {
                          $desc,
                          $dir = undef,
                          $background = true,
+                         $depends = [],
                          $subs = []) {
         $service_name = $title
         $service_description = $desc
@@ -30,6 +31,7 @@ class compbox {
         $start_dir = $dir
         $start_command = $command
         $service_file = "/etc/init.d/${service_name}"
+        $depends_str = join($depends, ' ')
         file { $service_file:
             ensure  => file,
             content => template('compbox/service.erb'),
@@ -282,6 +284,7 @@ class compbox {
         dir     => '/var/www/stream',
         user    => 'www-data',
         command => 'node main.js',
+        depends => ['srcomp-http'],
         require => Package['nodejs-legacy'],
         subs    => [Exec['build stream'],
                     File['/var/www/stream/config.coffee'],
