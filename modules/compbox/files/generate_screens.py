@@ -10,7 +10,8 @@ VULCANIZE = '/usr/local/bin/vulcanize'
 
 FILES = ('arena.html',
          'outside.html',
-         'shepherding.html')
+         'shepherding.html',
+         'staging.html')
 
 shutil.rmtree(os.path.join(TARGET, 'components'),
               ignore_errors=True)
