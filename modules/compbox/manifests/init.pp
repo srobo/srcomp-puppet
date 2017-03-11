@@ -1,7 +1,7 @@
 # Install and configure the services running on the compbox
 class compbox {
-    $comp_source    = 'git://studentrobotics.org'
-    $compstate      = 'git://studentrobotics.org/comp/sr2016-comp.git'
+    $comp_source    = 'git://git.studentrobotics.org'
+    $compstate      = 'git://git.studentrobotics.org/comp/sr2016-comp.git'
     $compstate_path = '/srv/state'
 
     $track_source = false
