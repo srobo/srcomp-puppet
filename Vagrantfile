@@ -1,5 +1,5 @@
 Vagrant.configure("2") do |config|
-    config.vm.box = "ubuntu/wily64"
+    config.vm.box = "ubuntu/xenial64"
 
     config.vm.provider "virtualbox" do |v|
         v.memory = 1024
@@ -10,6 +10,9 @@ Vagrant.configure("2") do |config|
 
     config.ssh.private_key_path = ['~/.vagrant.d/insecure_private_key', '~/.ssh/id_rsa']
     config.ssh.insert_key = false
+
+    # Bootstrap
+    config.vm.provision "shell", inline: "apt-get update; apt-get install -y puppet git"
 
     config.vm.provision "puppet" do |puppet|
         puppet.manifests_path = "manifests"
