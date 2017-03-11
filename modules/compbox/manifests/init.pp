@@ -376,17 +376,17 @@ class compbox {
     }
 
     # Login configuration
-    file { '/home/ubuntu/.ssh':
+    file { '/home/vagrant/.ssh':
         ensure  => directory,
         mode    => '0700',
-        owner   => 'ubuntu',
+        owner   => 'vagrant',
     }
-    file { '/home/ubuntu/.ssh/authorized_keys':
+    file { '/home/vagrant/.ssh/authorized_keys':
         ensure  => file,
         mode    => '0600',
-        owner   => 'ubuntu',
+        owner   => 'vagrant',
         source  => 'puppet:///modules/compbox/main-user-authorized_keys',
-        require => File['/home/ubuntu/.ssh'],
+        require => File['/home/vagrant/.ssh'],
     }
     augeas { 'sshd_config':
         context => '/files/etc/ssh/sshd_config',
