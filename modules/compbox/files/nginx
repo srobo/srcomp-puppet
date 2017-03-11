@@ -8,7 +8,7 @@ server {
     server_name compbox;
 
     location / {
-        root /var/www/html;
+        root /var/www/screens;
     }
 
     location = /stream {

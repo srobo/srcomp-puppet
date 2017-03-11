@@ -197,39 +197,17 @@ class compbox {
         refreshonly => true,
         user        => 'www-data',
         require     => Exec['install bower']
-    } ~>
-    exec { 'compile screens':
-        command     => '/bin/rm -f /var/www/screens-compiled ; \
-                        /usr/bin/python /var/www/generate_screens.py && \
-                        /usr/bin/touch /var/www/screens-compiled',
-        subscribe   => File['/var/www/generate_screens.py'],
-        creates     => '/var/www/screens-compiled',
-        require     => [Package['python-lxml'],
-                        File['/var/www/html'],
-                        Exec['install vulcanize']],
-        user        => 'www-data'
     }
 
-    file { '/var/www/html':
-        ensure  => directory,
-        owner   => 'www-data',
-        mode    => '0755',
-        require => File['/var/www']
-    } ->
-    file { '/var/www/html/compbox-index.html':
+    file { '/var/www/screens/compbox-index.html':
         ensure  => file,
         source  => 'puppet:///modules/compbox/compbox-index.html',
         owner   => 'www-data',
+        require => Vcsrepo['/var/www/screens'],
     }
 
     package { 'python-lxml':
         ensure => present
-    }
-
-    file { '/var/www/generate_screens.py':
-        ensure => file,
-        source => 'puppet:///modules/compbox/generate_screens.py',
-        owner  => 'www-data'
     }
 
     # Compstate
