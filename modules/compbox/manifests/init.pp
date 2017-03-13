@@ -5,6 +5,7 @@ class compbox {
     $compstate_path = '/srv/state'
 
     $track_source = false
+    $main_user = 'vagrant'
 
     if $track_source {
         $vcs_ensure = 'latest'
@@ -354,17 +355,17 @@ class compbox {
     }
 
     # Login configuration
-    file { '/home/vagrant/.ssh':
+    file { "/home/${main_user}/.ssh":
         ensure  => directory,
         mode    => '0700',
-        owner   => 'vagrant',
+        owner   => $main_user,
     }
-    file { '/home/vagrant/.ssh/authorized_keys':
+    file { "/home/${main_user}/.ssh/authorized_keys":
         ensure  => file,
         mode    => '0600',
-        owner   => 'vagrant',
+        owner   => $main_user,
         source  => 'puppet:///modules/compbox/main-user-authorized_keys',
-        require => File['/home/vagrant/.ssh'],
+        require => File["/home/${main_user}/.ssh"],
     }
     augeas { 'sshd_config':
         context => '/files/etc/ssh/sshd_config',
