@@ -5,7 +5,7 @@ class compbox {
     $compstate_path = '/srv/state'
 
     $track_source = false
-    $main_user = 'vagrant'
+    $main_user = 'pi' # Change to 'vagrant' in development
 
     if $track_source {
         $vcs_ensure = 'latest'
