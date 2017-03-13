@@ -24,6 +24,8 @@ then
     fi
 fi
 
+git submodule update --init --recursive
+
 ln -s $mydir $puppet_dir
 
 apt-get install puppet
