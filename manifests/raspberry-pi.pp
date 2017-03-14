@@ -3,4 +3,8 @@ $main_user = 'pi'
 
 node default {
     include compbox
+
+    class { 'hostname':
+        hostname    => 'compbox-2017.sr',
+    }
 }
