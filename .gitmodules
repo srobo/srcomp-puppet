@@ -7,3 +7,9 @@
 [submodule "modules/ntp"]
 	path = modules/ntp
 	url = https://github.com/puppetlabs/puppetlabs-ntp
+[submodule "modules/nodejs"]
+	path = modules/nodejs
+	url = https://github.com/voxpupuli/puppet-nodejs
+[submodule "modules/apt"]
+	path = modules/apt
+	url = https://github.com/puppetlabs/puppetlabs-apt

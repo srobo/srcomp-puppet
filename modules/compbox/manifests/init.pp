@@ -50,7 +50,7 @@ class compbox {
 
     exec { 'update package lists':
         command => '/usr/bin/apt-get update',
-        before  => [Package['libyaml-dev'],Package['npm'],Package['nodejs']],
+        before  => [Package['libyaml-dev']],
     }
 
     # A user for shelling in to update the compstate
@@ -162,13 +162,12 @@ class compbox {
     }
 
     # Screens and stream
-    package { ['nodejs', 'nodejs-legacy', 'npm']:
-        ensure => present
+    class { '::nodejs':
+        repo_url_suffix     => '4.x',
     } ->
-    exec {
-      'install bower':
-        command => '/usr/bin/npm install -g bower --config.interactive=false',
-        creates => '/usr/local/bin/bower';
+    package { 'bower':
+        ensure      => present,
+        provider    => npm,
     }
 
     # Main webserver
@@ -194,7 +193,7 @@ class compbox {
         environment => 'HOME=/var/www',
         refreshonly => true,
         user        => 'www-data',
-        require     => Exec['install bower']
+        require     => Package['bower'],
     }
 
     file { '/var/www/screens/compbox-index.html':
@@ -247,7 +246,7 @@ class compbox {
         cwd         => '/var/www/stream',
         user        => 'www-data',
         refreshonly => true,
-        require     => Package['npm']
+        require     => Class['nodejs']
     }
     file { '/var/www/stream/config.coffee':
         ensure  => file,
@@ -261,7 +260,7 @@ class compbox {
         user    => 'www-data',
         command => 'node main.js',
         depends => ['srcomp-http'],
-        require => Package['nodejs-legacy'],
+        require => Class['nodejs'],
         subs    => [Exec['build stream'],
                     File['/var/www/stream/config.coffee'],
                     # Subscribe to the API to get config changes
@@ -312,7 +311,7 @@ class compbox {
         cwd         => '/var/www/nwatchlive',
         user        => 'www-data',
         refreshonly => true,
-        require     => Package['npm']
+        require     => Class['nodejs']
     }
     file { '/var/www/comp-services.js':
         ensure  => file,
@@ -326,7 +325,7 @@ class compbox {
         user    => 'www-data',
         command => 'node main.js --port=5002 --quiet \
                     /var/www/comp-services.js services.default.js',
-        require => Package['nodejs-legacy'],
+        require => Class['nodejs'],
         subs    => [Exec['build nwatchlive'],
                     File['/var/www/comp-services.js']]
     }
