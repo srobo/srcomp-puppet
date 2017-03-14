@@ -195,6 +195,12 @@ class compbox {
         user        => 'www-data',
         require     => Package['bower'],
     }
+    file { '/var/www/screens/config.json':
+        ensure  => file,
+        content => template('compbox/screens-config.json.erb'),
+        owner   => 'www-data',
+        require => Vcsrepo['/var/www/screens'],
+    }
 
     file { '/var/www/screens/compbox-index.html':
         ensure  => file,
