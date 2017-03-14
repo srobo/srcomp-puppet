@@ -13,6 +13,11 @@ class compbox {
         $vcs_ensure = 'present'
     }
 
+    $hostname = 'compbox-2017'
+    class { 'hostname':
+        hostname    => $hostname,
+    }
+
     define initd_service($command,
                          $user,
                          $desc,
