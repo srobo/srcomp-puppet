@@ -389,7 +389,8 @@ class compbox {
         require => Augeas['sshd_config'],
     }
 
-    package { 'screen':
+    # Useful packages
+    package { ['screen', 'iotop', 'htop']:
         ensure  => present,
     }
 
