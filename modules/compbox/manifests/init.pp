@@ -202,11 +202,15 @@ class compbox {
         require => Vcsrepo['/var/www/screens'],
     }
 
-    file { '/var/www/screens/compbox-index.html':
+    file { '/var/www/html':
+        ensure  => directory,
+        owner   => 'www-data',
+        mode   => '0755'
+    } ->
+    file { '/var/www/html/compbox-index.html':
         ensure  => file,
         source  => 'puppet:///modules/compbox/compbox-index.html',
         owner   => 'www-data',
-        require => Vcsrepo['/var/www/screens'],
     }
 
     package { 'python-lxml':
