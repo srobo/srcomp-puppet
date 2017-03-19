@@ -394,6 +394,11 @@ class compbox {
         require => Augeas['sshd_config'],
     }
 
+    # Useful packages
+    package { ['screen', 'iotop', 'htop']:
+        ensure  => present,
+    }
+
     # NTP Server config
     class { '::ntp':
         udlc    => true,
