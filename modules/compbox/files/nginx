@@ -7,6 +7,10 @@ server {
 
     server_name compbox;
 
+    location = / {
+        break;
+    }
+
     location / {
         root /var/www/screens;
     }

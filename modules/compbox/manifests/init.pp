@@ -1,7 +1,7 @@
 # Install and configure the services running on the compbox
 class compbox {
     $comp_source    = 'git://git.studentrobotics.org'
-    $compstate      = 'git://git.studentrobotics.org/comp/sr2016-comp.git'
+    $compstate      = 'https://github.com/srobo/sr2017-comp.git'
     $compstate_path = '/srv/state'
 
     $track_source = false
@@ -207,11 +207,15 @@ class compbox {
         require => Vcsrepo['/var/www/screens'],
     }
 
-    file { '/var/www/screens/compbox-index.html':
+    file { '/var/www/html':
+        ensure  => directory,
+        owner   => 'www-data',
+        mode   => '0755'
+    } ->
+    file { '/var/www/html/compbox-index.html':
         ensure  => file,
         source  => 'puppet:///modules/compbox/compbox-index.html',
         owner   => 'www-data',
-        require => Vcsrepo['/var/www/screens'],
     }
 
     package { 'python-lxml':
