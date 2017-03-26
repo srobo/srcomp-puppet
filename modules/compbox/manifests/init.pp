@@ -13,7 +13,7 @@ class compbox {
         $vcs_ensure = 'present'
     }
 
-    $hostname = 'compbox-2017'
+    $hostname = 'compbox-2017.sr'
     class { 'hostname':
         hostname    => $hostname,
     }
