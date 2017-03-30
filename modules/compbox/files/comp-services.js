@@ -7,6 +7,8 @@ addWatcher('compbox stream', watchStream('http://localhost/stream', ['team', 'pi
 
 addWatcher('compbox API', watchHTTP('http://localhost/comp-api/arenas'));
 
+addWatcher('upstream stream', watchStream('http://srcomp-stream.herokuapps.com/stream', ['team', 'ping']));
+
 addWatcher('upstream API', watchHTTP(mainWebsite + '/comp-api/arenas'));
 
 addWatcher('upstream sync', function(ack, err) {
