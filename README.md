@@ -1,7 +1,10 @@
 # SRComp Puppet
 
-This is a puppet configuration for various SRComp related things,
-including the creation of a VM suitable for use at the competition.
+This is a [puppet][puppet] configuration for various [SRComp][srcomp] related
+things, including the creation of a VM suitable for use at a competition event.
+
+[puppet]: https://github.com/puppetlabs/puppet
+[srcomp]: https://github.com/PeterJCLaw/srcomp
 
 It's a lightweight Vagrant wrapper around a puppet config.
 
