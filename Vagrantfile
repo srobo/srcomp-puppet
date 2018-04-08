@@ -6,7 +6,7 @@ Vagrant.configure("2") do |config|
     end
     config.vm.network "public_network"
     config.vm.network "forwarded_port", guest: 80, host: 8080
-    config.vm.hostname = "compbox-2017"
+    config.vm.hostname = "compbox-2018"
 
     config.ssh.private_key_path = ['~/.vagrant.d/insecure_private_key', '~/.ssh/id_rsa']
     config.ssh.insert_key = false
