@@ -123,15 +123,11 @@ class compbox {
     }
 
     package { ['git',
+               'python-pip',
                'python-setuptools',
                'python-dev',
                'python-requests']:
         ensure => present
-    } ->
-    # Ubuntu's system pip break as soon as sr.comp.cli is installed
-    exec { 'install pip':
-        command => '/usr/bin/easy_install pip',
-        creates => '/usr/local/bin/pip'
     } ->
     package { 'sr.comp.ranker':
         ensure   => $vcs_ensure,
@@ -281,7 +277,7 @@ class compbox {
     package { 'gunicorn':
         ensure   => present,
         provider => 'pip',
-        require  => Exec['install pip']
+        require  => Package['python-pip']
     }
     $compapi_logging_ini = '/var/www/srcomp-http-logging.ini'
     file { $compapi_logging_ini:
