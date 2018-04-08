@@ -1,6 +1,6 @@
 # Install and configure the services running on the compbox
 class compbox {
-    $comp_source    = 'git://git.studentrobotics.org'
+    $comp_source    = 'git://git.studentrobotics.org/comp'
     $compstate      = 'https://github.com/srobo/sr2017-comp.git'
     $compstate_path = '/srv/state'
 
@@ -90,7 +90,7 @@ class compbox {
     vcsrepo { $http_dir:
         ensure   => present,
         provider => git,
-        source   => "${comp_source}/comp/srcomp-http.git",
+        source   => "${comp_source}/srcomp-http.git",
         user     => 'srcomp',
         require  => User['srcomp'],
     }
@@ -136,22 +136,22 @@ class compbox {
     package { 'sr.comp.ranker':
         ensure   => $vcs_ensure,
         provider => 'pip',
-        source   => "git+${comp_source}/comp/ranker.git"
+        source   => "git+${comp_source}/ranker.git"
     } ->
     package { 'sr.comp':
         ensure   => $vcs_ensure,
         provider => 'pip',
-        source   => "git+${comp_source}/comp/srcomp.git"
+        source   => "git+${comp_source}/srcomp.git"
     } ->
     package { 'sr.comp.http':
         ensure   => $vcs_ensure,
         provider => 'pip',
-        source   => "git+${comp_source}/comp/srcomp-http.git"
+        source   => "git+${comp_source}/srcomp-http.git"
     }
     package { 'sr.comp.cli':
         ensure   => $vcs_ensure,
         provider => 'pip',
-        source   => "git+${comp_source}/comp/srcomp-cli.git",
+        source   => "git+${comp_source}/srcomp-cli.git",
         require  => Package['sr.comp']
     }
 
@@ -184,7 +184,7 @@ class compbox {
     vcsrepo { '/var/www/screens':
         ensure   => $vcs_ensure,
         provider => git,
-        source   => "${comp_source}/comp/srcomp-screens.git",
+        source   => "${comp_source}/srcomp-screens.git",
         owner    => 'www-data'
     } ~>
     exec { 'build screens':
@@ -247,7 +247,7 @@ class compbox {
     vcsrepo { '/var/www/stream':
         ensure   => $vcs_ensure,
         provider => git,
-        source   => "${comp_source}/comp/srcomp-stream.git",
+        source   => "${comp_source}/srcomp-stream.git",
         owner    => 'www-data',
         require  => File['/var/www']
     } ~>
