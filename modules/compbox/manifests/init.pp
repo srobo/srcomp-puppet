@@ -13,38 +13,23 @@ class compbox {
         $vcs_ensure = 'present'
     }
 
-    define initd_service($command,
-                         $user,
-                         $desc,
-                         $dir = undef,
-                         $background = true,
-                         $depends = [],
-                         $subs = []) {
-        $service_name = $title
+    define systemd_service($command,
+                           $user,
+                           $desc,
+                           $dir = undef,
+                           $depends = ['network.target'],
+                           $subs = []) {
+        $service_name = "${title}.service"
+
         $service_description = $desc
-
-        $log_dir = "/var/log/${service_name}"
-        file { $log_dir:
-            ensure  => directory,
-            owner   => $user,
-        }
-
         $start_dir = $dir
         $start_command = $command
-        $service_file = "/etc/init.d/${service_name}"
         $depends_str = join($depends, ' ')
-        file { $service_file:
-            ensure  => file,
-            content => template('compbox/service.erb'),
-            mode    => '0755',
-            require => File[$log_dir],
-        }
-        # TODO: require => File[$start_dir]?
 
-        service { $service_name:
-            ensure    => running,
-            enable    => true,
-            subscribe => union([File[$service_file]], $subs),
+        systemd::unit_file { $service_name:
+            source => template('compbox/service.erb'),
+        } ~> service { $title:
+            ensure => 'running',
         }
     }
 
@@ -260,7 +245,7 @@ class compbox {
         owner   => 'www-data',
         require => VCSRepo['/var/www/stream']
     }
-    initd_service { 'srcomp-stream':
+    systemd_service { 'srcomp-stream':
         desc    => 'Publishes a stream of events representing changes in the competition state.',
         dir     => '/var/www/stream',
         user    => 'www-data',
@@ -277,7 +262,7 @@ class compbox {
     package { 'gunicorn':
         ensure   => present,
         provider => 'pip',
-        require  => Package['python-pip']
+        require  => Package['python- pip']
     }
     $compapi_logging_ini = '/var/www/srcomp-http-logging.ini'
     file { $compapi_logging_ini:
@@ -291,7 +276,7 @@ class compbox {
         content => template('compbox/http-wsgi.cfg.erb'),
         require => File['/var/www']
     }
-    initd_service { 'srcomp-http':
+    systemd_service { 'srcomp-http':
         desc    => 'Presents an HTTP API for accessing the competition state.',
         user    => 'www-data',
         command => "gunicorn -c ${compapi_wsgi} --log-config \
@@ -325,7 +310,7 @@ class compbox {
         owner   => 'www-data',
         require => File['/var/www']
     }
-    initd_service { 'nwatchlive':
+    systemd_service { 'nwatchlive':
         desc    => 'Provides a status page for all hosted services.',
         dir     => '/var/www/nwatchlive',
         user    => 'www-data',
