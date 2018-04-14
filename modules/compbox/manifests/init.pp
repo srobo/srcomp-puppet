@@ -33,7 +33,6 @@ class compbox {
             group   => 'root',
             mode    => '0644',
             content => template('compbox/service.erb'),
-            notify  => Service[$title],
         } ->
         file { "/etc/systemd/system/multi-user.target.wants/${service_name}":
             ensure  => link,
@@ -46,7 +45,9 @@ class compbox {
             subscribe => File[$service_file],
         } ->
         service { $title:
-            ensure  => 'running',
+            ensure    => running,
+            enable    => true,
+            subscribe => union([File[$service_file]], $subs),
         }
     }
 
