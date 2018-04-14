@@ -382,8 +382,8 @@ class compbox {
         service { 'sshd':
             ensure  => running,
             name    => $::osfamily ? {
-                Debian  => 'ssh',
-                default => 'sshd',
+                'Debian'  => 'ssh',
+                default   => 'sshd',
             },
             enable  => true,
             require => Augeas['sshd_config'],
