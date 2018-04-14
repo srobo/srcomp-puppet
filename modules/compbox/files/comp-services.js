@@ -1,4 +1,4 @@
-var mainWebsite = 'https://www.studentrobotics.org';
+var upstreamBase = 'https://www.studentrobotics.org';
 
 var http = require('http');
 var request = require('request');
@@ -9,7 +9,7 @@ addWatcher('compbox API', watchHTTP('http://localhost/comp-api/arenas'));
 
 addWatcher('upstream stream', watchStream('http://srcomp-stream.herokuapp.com/', ['team', 'ping']));
 
-addWatcher('upstream API', watchHTTP(mainWebsite + '/comp-api/arenas'));
+addWatcher('upstream API', watchHTTP(upstreamBase + '/comp-api/arenas'));
 
 addWatcher('upstream sync', function(ack, err) {
     request('http://localhost/comp-api/state', function(e, response, body) {
@@ -19,7 +19,7 @@ addWatcher('upstream sync', function(ack, err) {
             err("downstream " + response.statusCode);
         } else {
             var dsState = JSON.parse(body).state;
-            request(mainWebsite + '/comp-api/state', function(e, response, body) {
+            request(upstreamBase + '/comp-api/state', function(e, response, body) {
                 if (e) {
                     err("upstream " + e.message);
                 } else if (response.statusCode != 200) {
@@ -38,4 +38,4 @@ addWatcher('upstream sync', function(ack, err) {
     });
 });
 
-addWatcher('IDE', watchHTTP(mainWebsite + '/ide/control.php/info/about'));
+addWatcher('IDE', watchHTTP(upstreamBase + '/ide/control.php/info/about'));
