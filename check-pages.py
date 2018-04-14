@@ -12,10 +12,12 @@ FAIL = '\033[91m'
 ENDC = '\033[0m'
 
 parser = argparse.ArgumentParser()
-parser.add_argument('url',
-                    nargs='?',
-                    default=DEFAULT_URL,
-                    help="The root url of the vm to check (default: %(default)s)")
+parser.add_argument(
+    'url',
+    nargs='?',
+    default=DEFAULT_URL,
+    help="The root url of the vm to check (default: %(default)s)",
+)
 args = parser.parse_args()
 
 try:
