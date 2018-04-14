@@ -265,7 +265,7 @@ class compbox {
         desc    => 'Publishes a stream of events representing changes in the competition state.',
         dir     => '/var/www/stream',
         user    => 'www-data',
-        command => 'node main.js',
+        command => '/usr/bin/node main.js',
         depends => ['srcomp-http'],
         require => Class['nodejs'],
         subs    => [Exec['build stream'],
@@ -295,7 +295,7 @@ class compbox {
     systemd_service { 'srcomp-http':
         desc    => 'Presents an HTTP API for accessing the competition state.',
         user    => 'www-data',
-        command => "gunicorn -c ${compapi_wsgi} --log-config \
+        command => "/usr/local/bin/gunicorn -c ${compapi_wsgi} --log-config \
                     ${compapi_logging_ini} sr.comp.http:app",
         require => [Package['gunicorn'],
                     VCSRepo[$compstate_path]],
@@ -330,7 +330,7 @@ class compbox {
         desc    => 'Provides a status page for all hosted services.',
         dir     => '/var/www/nwatchlive',
         user    => 'www-data',
-        command => 'node main.js --port=5002 --quiet \
+        command => '/usr/bin/node main.js --port=5002 --quiet \
                     /var/www/comp-services.js services.default.js',
         require => Class['nodejs'],
         subs    => [Exec['build nwatchlive'],
