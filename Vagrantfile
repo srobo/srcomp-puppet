@@ -12,7 +12,10 @@ Vagrant.configure("2") do |config|
     config.ssh.insert_key = false
 
     # Bootstrap
-    config.vm.provision "shell", inline: "apt-get update; apt-get install -y puppet git"
+    config.vm.provision "shell", inline: "
+        (which git && which puppet) > /dev/null || \
+        (apt-get update && apt-get install -y puppet git)
+    "
 
     config.vm.provision "puppet" do |puppet|
         puppet.manifests_path = "manifests"
