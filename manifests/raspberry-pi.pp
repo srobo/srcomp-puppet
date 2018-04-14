@@ -5,6 +5,6 @@ node default {
     include compbox
 
     class { 'hostname':
-        hostname    => 'compbox-2017.sr',
+        hostname    => 'compbox-2018.sr',
     }
 }
