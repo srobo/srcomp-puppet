@@ -12,11 +12,6 @@ class compbox {
         $vcs_ensure = 'present'
     }
 
-    $hostname = 'compbox-2017.sr'
-    class { 'hostname':
-        hostname    => $hostname,
-    }
-
     define systemd_service($command,
                            $user,
                            $desc,
