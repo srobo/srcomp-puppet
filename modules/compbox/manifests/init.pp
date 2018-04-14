@@ -184,7 +184,7 @@ class compbox {
         owner    => 'www-data'
     } ~>
     exec { 'build screens':
-        command     => '/usr/local/bin/bower install',
+        command     => '/usr/bin/bower install',
         cwd         => '/var/www/screens',
         environment => 'HOME=/var/www',
         refreshonly => true,
