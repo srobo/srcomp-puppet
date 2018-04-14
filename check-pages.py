@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('url',
                     nargs='?',
                     default=DEFAULT_URL,
-                    help="The root url of the vm to check (default: {0})".format(DEFAULT_URL))
+                    help="The root url of the vm to check (default: %(default)s)")
 args = parser.parse_args()
 
 try:
