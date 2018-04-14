@@ -4,7 +4,7 @@ $main_user = 'pi'
 node default {
     include compbox
 
-    class { 'hostname':
+    class { 'compbox::hostname':
         hostname    => 'compbox-2018.sr',
     }
 }
