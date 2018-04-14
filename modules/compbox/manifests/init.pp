@@ -20,16 +20,32 @@ class compbox {
                            $depends = ['network.target'],
                            $subs = []) {
         $service_name = "${title}.service"
+        $service_file = "/etc/systemd/system/${service_name}"
 
         $service_description = $desc
         $start_dir = $dir
         $start_command = $command
         $depends_str = join($depends, ' ')
 
-        systemd::unit_file { $service_name:
-            source => template('compbox/service.erb'),
-        } ~> service { $title:
-            ensure => 'running',
+        file { $service_file:
+            ensure  => present,
+            owner   => 'root',
+            group   => 'root',
+            mode    => '0644',
+            content => template('compbox/service.erb'),
+            notify  => Service[$title],
+        } ->
+        file { "/etc/systemd/system/multi-user.target.wants/${service_name}":
+            ensure  => link,
+            target  => $service_file,
+        } ->
+        exec { "${title}-systemd-load":
+            provider  => 'shell',
+            command   => 'systemctl daemon-reload',
+            onlyif    => "systemctl --all | grep -F ${service_name}; if test $? = 0; then exit 1; fi; exit 0",
+        } ->
+        service { $title:
+            ensure  => 'running',
         }
     }
 
