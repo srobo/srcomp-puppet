@@ -1,11 +1,10 @@
 # Install and configure the services running on the compbox
 class compbox {
-    $comp_source    = 'git://git.studentrobotics.org'
-    $compstate      = 'https://github.com/srobo/sr2017-comp.git'
+    $comp_source    = 'git://github.com/PeterJCLaw'
+    $compstate      = 'https://github.com/PeterJCLaw/dummy-comp.git'
     $compstate_path = '/srv/state'
 
     $track_source = false
-    $main_user = 'pi' # Change to 'vagrant' in development
 
     if $track_source {
         $vcs_ensure = 'latest'
@@ -18,35 +17,38 @@ class compbox {
         hostname    => $hostname,
     }
 
-    define initd_service($command,
-                         $user,
-                         $desc,
-                         $dir = undef,
-                         $background = true,
-                         $depends = [],
-                         $subs = []) {
-        $service_name = $title
+    define systemd_service($command,
+                           $user,
+                           $desc,
+                           $dir = undef,
+                           $depends = ['network.target'],
+                           $subs = []) {
+        $service_name = "${title}.service"
+        $service_file = "/etc/systemd/system/${service_name}"
+
         $service_description = $desc
-
-        $log_dir = "/var/log/${service_name}"
-        file { $log_dir:
-            ensure  => directory,
-            owner   => $user,
-        }
-
         $start_dir = $dir
         $start_command = $command
-        $service_file = "/etc/init.d/${service_name}"
         $depends_str = join($depends, ' ')
-        file { $service_file:
-            ensure  => file,
-            content => template('compbox/service.erb'),
-            mode    => '0755',
-            require => File[$log_dir],
-        }
-        # TODO: require => File[$start_dir]?
 
-        service { $service_name:
+        file { $service_file:
+            ensure  => present,
+            owner   => 'root',
+            group   => 'root',
+            mode    => '0644',
+            content => template('compbox/service.erb'),
+        } ->
+        file { "/etc/systemd/system/multi-user.target.wants/${service_name}":
+            ensure  => link,
+            target  => $service_file,
+        } ->
+        exec { "${title}-systemd-load":
+            provider  => 'shell',
+            command   => 'systemctl daemon-reload',
+            onlyif    => "systemctl --all | grep -F ${service_name}; if test $? = 0; then exit 1; fi; exit 0",
+            subscribe => File[$service_file],
+        } ->
+        service { $title:
             ensure    => running,
             enable    => true,
             subscribe => union([File[$service_file]], $subs),
@@ -95,7 +97,7 @@ class compbox {
     vcsrepo { $http_dir:
         ensure   => present,
         provider => git,
-        source   => "${comp_source}/comp/srcomp-http.git",
+        source   => "${comp_source}/srcomp-http.git",
         user     => 'srcomp',
         require  => User['srcomp'],
     }
@@ -128,35 +130,31 @@ class compbox {
     }
 
     package { ['git',
+               'python-pip',
                'python-setuptools',
                'python-dev',
                'python-requests']:
         ensure => present
     } ->
-    # Ubuntu's system pip break as soon as sr.comp.cli is installed
-    exec { 'install pip':
-        command => '/usr/bin/easy_install pip',
-        creates => '/usr/local/bin/pip'
-    } ->
     package { 'sr.comp.ranker':
         ensure   => $vcs_ensure,
         provider => 'pip',
-        source   => "git+${comp_source}/comp/ranker.git"
+        source   => "git+${comp_source}/ranker.git"
     } ->
     package { 'sr.comp':
         ensure   => $vcs_ensure,
         provider => 'pip',
-        source   => "git+${comp_source}/comp/srcomp.git"
+        source   => "git+${comp_source}/srcomp.git"
     } ->
     package { 'sr.comp.http':
         ensure   => $vcs_ensure,
         provider => 'pip',
-        source   => "git+${comp_source}/comp/srcomp-http.git"
+        source   => "git+${comp_source}/srcomp-http.git"
     }
     package { 'sr.comp.cli':
         ensure   => $vcs_ensure,
         provider => 'pip',
-        source   => "git+${comp_source}/comp/srcomp-cli.git",
+        source   => "git+${comp_source}/srcomp-cli.git",
         require  => Package['sr.comp']
     }
 
@@ -168,7 +166,8 @@ class compbox {
 
     # Screens and stream
     class { '::nodejs':
-        repo_url_suffix     => '4.x',
+        repo_url_suffix         => '8.x',
+        legacy_debian_symlinks  => false,
     } ->
     package { 'bower':
         ensure      => present,
@@ -189,7 +188,7 @@ class compbox {
     vcsrepo { '/var/www/screens':
         ensure   => $vcs_ensure,
         provider => git,
-        source   => "${comp_source}/comp/srcomp-screens.git",
+        source   => "${comp_source}/srcomp-screens.git",
         owner    => 'www-data'
     } ~>
     exec { 'build screens':
@@ -248,7 +247,7 @@ class compbox {
     vcsrepo { '/var/www/stream':
         ensure   => $vcs_ensure,
         provider => git,
-        source   => "${comp_source}/comp/srcomp-stream.git",
+        source   => "${comp_source}/srcomp-stream.git",
         owner    => 'www-data',
         require  => File['/var/www']
     } ~>
@@ -265,11 +264,11 @@ class compbox {
         owner   => 'www-data',
         require => VCSRepo['/var/www/stream']
     }
-    initd_service { 'srcomp-stream':
+    compbox::systemd_service { 'srcomp-stream':
         desc    => 'Publishes a stream of events representing changes in the competition state.',
         dir     => '/var/www/stream',
         user    => 'www-data',
-        command => 'node main.js',
+        command => '/usr/bin/node main.js',
         depends => ['srcomp-http'],
         require => Class['nodejs'],
         subs    => [Exec['build stream'],
@@ -282,7 +281,7 @@ class compbox {
     package { 'gunicorn':
         ensure   => present,
         provider => 'pip',
-        require  => Exec['install pip']
+        require  => Package['python-pip']
     }
     $compapi_logging_ini = '/var/www/srcomp-http-logging.ini'
     file { $compapi_logging_ini:
@@ -296,10 +295,10 @@ class compbox {
         content => template('compbox/http-wsgi.cfg.erb'),
         require => File['/var/www']
     }
-    initd_service { 'srcomp-http':
+    compbox::systemd_service { 'srcomp-http':
         desc    => 'Presents an HTTP API for accessing the competition state.',
         user    => 'www-data',
-        command => "gunicorn -c ${compapi_wsgi} --log-config \
+        command => "/usr/local/bin/gunicorn -c ${compapi_wsgi} --log-config \
                     ${compapi_logging_ini} sr.comp.http:app",
         require => [Package['gunicorn'],
                     VCSRepo[$compstate_path]],
@@ -330,11 +329,11 @@ class compbox {
         owner   => 'www-data',
         require => File['/var/www']
     }
-    initd_service { 'nwatchlive':
+    compbox::systemd_service { 'nwatchlive':
         desc    => 'Provides a status page for all hosted services.',
         dir     => '/var/www/nwatchlive',
         user    => 'www-data',
-        command => 'node main.js --port=5002 --quiet \
+        command => '/usr/bin/node main.js --port=5002 --quiet \
                     /var/www/comp-services.js services.default.js',
         require => Class['nodejs'],
         subs    => [Exec['build nwatchlive'],
@@ -361,37 +360,39 @@ class compbox {
         require => Package['nginx']
     }
 
-    # Login configuration
-    file { "/home/${main_user}/.ssh":
-        ensure  => directory,
-        mode    => '0700',
-        owner   => $main_user,
-    }
-    file { "/home/${main_user}/.ssh/authorized_keys":
-        ensure  => file,
-        mode    => '0600',
-        owner   => $main_user,
-        source  => 'puppet:///modules/compbox/main-user-authorized_keys',
-        require => File["/home/${main_user}/.ssh"],
-    }
-    augeas { 'sshd_config':
-        context => '/files/etc/ssh/sshd_config',
-        changes => [
-            # deny root logins
-            'set PermitRootLogin no',
-            # deny logins using passwords
-            'set PasswordAuthentication no',
-        ],
-        notify  => Service['sshd'],
-    }
-    service { 'sshd':
-        ensure  => running,
-        name    => $::osfamily ? {
-            Debian  => 'ssh',
-            default => 'sshd',
-        },
-        enable  => true,
-        require => Augeas['sshd_config'],
+    if $configure_main_user_access {
+        # Login configuration
+        file { "/home/${main_user}/.ssh":
+            ensure  => directory,
+            mode    => '0700',
+            owner   => $main_user,
+        }
+        file { "/home/${main_user}/.ssh/authorized_keys":
+            ensure  => file,
+            mode    => '0600',
+            owner   => $main_user,
+            source  => 'puppet:///modules/compbox/main-user-authorized_keys',
+            require => File["/home/${main_user}/.ssh"],
+        }
+        augeas { 'sshd_config':
+            context => '/files/etc/ssh/sshd_config',
+            changes => [
+                # deny root logins
+                'set PermitRootLogin no',
+                # deny logins using passwords
+                'set PasswordAuthentication no',
+            ],
+            notify  => Service['sshd'],
+        }
+        service { 'sshd':
+            ensure  => running,
+            name    => $::osfamily ? {
+                'Debian'  => 'ssh',
+                default   => 'sshd',
+            },
+            enable  => true,
+            require => Augeas['sshd_config'],
+        }
     }
 
     # Useful packages

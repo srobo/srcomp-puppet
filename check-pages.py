@@ -7,15 +7,17 @@ from BeautifulSoup import BeautifulSoup
 import sys
 import urllib2
 
-DEFAULT_URL = "http://localhost:8080"
+DEFAULT_URL = 'http://localhost:8080'
 FAIL = '\033[91m'
 ENDC = '\033[0m'
 
 parser = argparse.ArgumentParser()
-parser.add_argument("url",
-                    nargs='?',
-                    default=DEFAULT_URL,
-                    help="The root url of the vm to check (default: {0})".format(DEFAULT_URL))
+parser.add_argument(
+    'url',
+    nargs='?',
+    default=DEFAULT_URL,
+    help="The root url of the vm to check (default: %(default)s)",
+)
 args = parser.parse_args()
 
 try:
