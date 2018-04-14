@@ -43,6 +43,7 @@ class compbox {
             provider  => 'shell',
             command   => 'systemctl daemon-reload',
             onlyif    => "systemctl --all | grep -F ${service_name}; if test $? = 0; then exit 1; fi; exit 0",
+            subscribe => File[$service_file],
         } ->
         service { $title:
             ensure  => 'running',
