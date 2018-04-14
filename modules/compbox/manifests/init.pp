@@ -5,7 +5,6 @@ class compbox {
     $compstate_path = '/srv/state'
 
     $track_source = false
-    $main_user = 'vagrant'
 
     if $track_source {
         $vcs_ensure = 'latest'
@@ -356,37 +355,39 @@ class compbox {
         require => Package['nginx']
     }
 
-    # Login configuration
-    file { "/home/${main_user}/.ssh":
-        ensure  => directory,
-        mode    => '0700',
-        owner   => $main_user,
-    }
-    file { "/home/${main_user}/.ssh/authorized_keys":
-        ensure  => file,
-        mode    => '0600',
-        owner   => $main_user,
-        source  => 'puppet:///modules/compbox/main-user-authorized_keys',
-        require => File["/home/${main_user}/.ssh"],
-    }
-    augeas { 'sshd_config':
-        context => '/files/etc/ssh/sshd_config',
-        changes => [
-            # deny root logins
-            'set PermitRootLogin no',
-            # deny logins using passwords
-            'set PasswordAuthentication no',
-        ],
-        notify  => Service['sshd'],
-    }
-    service { 'sshd':
-        ensure  => running,
-        name    => $::osfamily ? {
-            Debian  => 'ssh',
-            default => 'sshd',
-        },
-        enable  => true,
-        require => Augeas['sshd_config'],
+    if $configure_main_user_access {
+        # Login configuration
+        file { "/home/${main_user}/.ssh":
+            ensure  => directory,
+            mode    => '0700',
+            owner   => $main_user,
+        }
+        file { "/home/${main_user}/.ssh/authorized_keys":
+            ensure  => file,
+            mode    => '0600',
+            owner   => $main_user,
+            source  => 'puppet:///modules/compbox/main-user-authorized_keys',
+            require => File["/home/${main_user}/.ssh"],
+        }
+        augeas { 'sshd_config':
+            context => '/files/etc/ssh/sshd_config',
+            changes => [
+                # deny root logins
+                'set PermitRootLogin no',
+                # deny logins using passwords
+                'set PasswordAuthentication no',
+            ],
+            notify  => Service['sshd'],
+        }
+        service { 'sshd':
+            ensure  => running,
+            name    => $::osfamily ? {
+                Debian  => 'ssh',
+                default => 'sshd',
+            },
+            enable  => true,
+            require => Augeas['sshd_config'],
+        }
     }
 
     # Useful packages
