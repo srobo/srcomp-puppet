@@ -262,7 +262,7 @@ class compbox {
     package { 'gunicorn':
         ensure   => present,
         provider => 'pip',
-        require  => Package['python- pip']
+        require  => Package['python-pip']
     }
     $compapi_logging_ini = '/var/www/srcomp-http-logging.ini'
     file { $compapi_logging_ini:
