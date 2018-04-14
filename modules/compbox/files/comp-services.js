@@ -1,4 +1,4 @@
-var upstreamBase = 'https://www.studentrobotics.org';
+var upstreamBase = 'http://srcomp.sourcebots.org';
 
 var http = require('http');
 var request = require('request');
