@@ -13,35 +13,38 @@ class compbox {
         $vcs_ensure = 'present'
     }
 
-    define initd_service($command,
-                         $user,
-                         $desc,
-                         $dir = undef,
-                         $background = true,
-                         $depends = [],
-                         $subs = []) {
-        $service_name = $title
+    define systemd_service($command,
+                           $user,
+                           $desc,
+                           $dir = undef,
+                           $depends = ['network.target'],
+                           $subs = []) {
+        $service_name = "${title}.service"
+        $service_file = "/etc/systemd/system/${service_name}"
+
         $service_description = $desc
-
-        $log_dir = "/var/log/${service_name}"
-        file { $log_dir:
-            ensure  => directory,
-            owner   => $user,
-        }
-
         $start_dir = $dir
         $start_command = $command
-        $service_file = "/etc/init.d/${service_name}"
         $depends_str = join($depends, ' ')
-        file { $service_file:
-            ensure  => file,
-            content => template('compbox/service.erb'),
-            mode    => '0755',
-            require => File[$log_dir],
-        }
-        # TODO: require => File[$start_dir]?
 
-        service { $service_name:
+        file { $service_file:
+            ensure  => present,
+            owner   => 'root',
+            group   => 'root',
+            mode    => '0644',
+            content => template('compbox/service.erb'),
+        } ->
+        file { "/etc/systemd/system/multi-user.target.wants/${service_name}":
+            ensure  => link,
+            target  => $service_file,
+        } ->
+        exec { "${title}-systemd-load":
+            provider  => 'shell',
+            command   => 'systemctl daemon-reload',
+            onlyif    => "systemctl --all | grep -F ${service_name}; if test $? = 0; then exit 1; fi; exit 0",
+            subscribe => File[$service_file],
+        } ->
+        service { $title:
             ensure    => running,
             enable    => true,
             subscribe => union([File[$service_file]], $subs),
@@ -261,11 +264,11 @@ class compbox {
         owner   => 'www-data',
         require => VCSRepo['/var/www/stream']
     }
-    initd_service { 'srcomp-stream':
+    systemd_service { 'srcomp-stream':
         desc    => 'Publishes a stream of events representing changes in the competition state.',
         dir     => '/var/www/stream',
         user    => 'www-data',
-        command => 'node main.js',
+        command => '/usr/bin/node main.js',
         depends => ['srcomp-http'],
         require => Class['nodejs'],
         subs    => [Exec['build stream'],
@@ -292,10 +295,10 @@ class compbox {
         content => template('compbox/http-wsgi.cfg.erb'),
         require => File['/var/www']
     }
-    initd_service { 'srcomp-http':
+    systemd_service { 'srcomp-http':
         desc    => 'Presents an HTTP API for accessing the competition state.',
         user    => 'www-data',
-        command => "gunicorn -c ${compapi_wsgi} --log-config \
+        command => "/usr/local/bin/gunicorn -c ${compapi_wsgi} --log-config \
                     ${compapi_logging_ini} sr.comp.http:app",
         require => [Package['gunicorn'],
                     VCSRepo[$compstate_path]],
@@ -326,11 +329,11 @@ class compbox {
         owner   => 'www-data',
         require => File['/var/www']
     }
-    initd_service { 'nwatchlive':
+    systemd_service { 'nwatchlive':
         desc    => 'Provides a status page for all hosted services.',
         dir     => '/var/www/nwatchlive',
         user    => 'www-data',
-        command => 'node main.js --port=5002 --quiet \
+        command => '/usr/bin/node main.js --port=5002 --quiet \
                     /var/www/comp-services.js services.default.js',
         require => Class['nodejs'],
         subs    => [Exec['build nwatchlive'],
