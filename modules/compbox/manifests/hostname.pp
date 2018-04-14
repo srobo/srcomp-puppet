@@ -6,13 +6,13 @@ class compbox::hostname ( $hostname = hiera('hostname') ) {
   if $::fqdn != $hostname {
     host { $::fqdn:
       ensure  => absent,
-      before  => Exec['hostname.sh'],
+      before  => Exec['hostnamectl'],
     }
 
     if $::fqdn != $::hostname {
       host { $::hostname:
         ensure  => absent,
-        before  => Exec['hostname.sh'],
+        before  => Exec['hostnamectl'],
       }
     }
 
@@ -20,7 +20,7 @@ class compbox::hostname ( $hostname = hiera('hostname') ) {
       ensure  => present,
       name    => $hostname,
       ip      => '127.0.1.1',
-      before  => Exec['hostname.sh'],
+      before  => Exec['hostnamectl'],
     }
 
     file { '/etc/hostname':
@@ -29,11 +29,11 @@ class compbox::hostname ( $hostname = hiera('hostname') ) {
       group   => 'root',
       mode    => '0644',
       content => "${hostname}\n",
-      notify  => Exec['hostname.sh'],
+      notify  => Exec['hostnamectl'],
     }
 
-    exec { 'hostname.sh':
-      command     => '/etc/init.d/hostname.sh start',
+    exec { 'hostnamectl':
+      command     => "/usr/bin/hostnamectl set-hostname $hostname",
       refreshonly => true,
     }
   }
