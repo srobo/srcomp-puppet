@@ -259,7 +259,7 @@ class compbox {
         owner   => 'www-data',
         require => VCSRepo['/var/www/stream']
     }
-    systemd_service { 'srcomp-stream':
+    compbox::systemd_service { 'srcomp-stream':
         desc    => 'Publishes a stream of events representing changes in the competition state.',
         dir     => '/var/www/stream',
         user    => 'www-data',
@@ -290,7 +290,7 @@ class compbox {
         content => template('compbox/http-wsgi.cfg.erb'),
         require => File['/var/www']
     }
-    systemd_service { 'srcomp-http':
+    compbox::systemd_service { 'srcomp-http':
         desc    => 'Presents an HTTP API for accessing the competition state.',
         user    => 'www-data',
         command => "/usr/local/bin/gunicorn -c ${compapi_wsgi} --log-config \
@@ -324,7 +324,7 @@ class compbox {
         owner   => 'www-data',
         require => File['/var/www']
     }
-    systemd_service { 'nwatchlive':
+    compbox::systemd_service { 'nwatchlive':
         desc    => 'Provides a status page for all hosted services.',
         dir     => '/var/www/nwatchlive',
         user    => 'www-data',
