@@ -2,9 +2,10 @@
 
 cd $(dirname $0)/..
 
-if [ -n "$1" ]
+if [ -f "$1" ]
 then
     MANIFEST="$1"
+    shift
 else
     if [ "pi" = "$USER" ]
     then
@@ -15,4 +16,4 @@ else
     echo "Running $MANIFEST based on platform"
 fi
 
-exec sudo puppet apply --modulepath=modules $MANIFEST
+exec sudo puppet apply --modulepath=modules $MANIFEST "$@"
