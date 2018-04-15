@@ -6,17 +6,40 @@ things, including the creation of a VM suitable for use at a competition event.
 [puppet]: https://github.com/puppetlabs/puppet
 [srcomp]: https://github.com/PeterJCLaw/srcomp
 
-It's a lightweight Vagrant wrapper around a puppet config.
+## Development
 
-Note: to simplify deployment on the day, the default Vagrant logins are
-disabled by the puppet run. If you want to be able to access the machine
-you create then you should add one of the public keys for the private
-keys specified in `config.ssh.private_key_path` to
- `modules/compbox/files/vagrant-authorized_keys`.
+A `Vagrantfile` and top-level manifest are provided for local development using
+[Vagrant][vagrant]. This creates an Ubuntu based VM with port 80 forwarded to
+port 8080 on the host machine. Visting <http://localhost:8080> on the host
+should show a compbox welcome page once the VM is provisioned.
 
-Once the machine is up and running, you should be able to see the pages
-it serves via <http://localhost:8080> and there is a test script which
-will validate them: `./check-pages.py`.
+Note: since deployment of the vagrant box is a supported scenario, the
+Vagrantfile compensates for the removal of the insecure vagrant public key SSH
+access by expecting that `config.ssh.private_key_path` will include a private
+key whose public key has been added to
+`modules/compbox/files/main-user-authorized_keys`.
+
+[vagrant]: http://vagrantup.com/
+
+## Deployment
+
+Deployment is supported via three mechanisms:
+
+ * to an existing VM
+ * under vagrant
+ * using a Raspberry Pi
+
+In the latter two cases, the default (insecure) credential-based access over ssh
+to the default user (as well as `root`) are disabled. Access to the main user is
+available via SSH using keys whose public keys are in
+`modules/compbox/files/main-user-authorized_keys`.
+
+## Validation
+
+No attempt is made to test the puppet confiration directly. Instead, running
+instances can be validated using `scripts/check-pages.py`. This downloads the
+index page from the compbox and validates that all the pages which that links to
+are accessible.
 
 ## Setup Notes
 
