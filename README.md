@@ -22,7 +22,7 @@ within the machine; this user is a suitable target for the
 
 A `Vagrantfile` and top-level manifest are provided for local development using
 [Vagrant][vagrant]. This creates an Ubuntu based VM with port 80 forwarded to
-port 8080 on the host machine. Visting <http://localhost:8080> on the host
+port 8080 on the host machine. Visiting <http://localhost:8080> on the host
 should show a compbox welcome page once the VM is provisioned.
 
 Note: since deployment of the vagrant box is a supported scenario, the
@@ -48,7 +48,7 @@ available via SSH using keys whose public keys are in
 
 ## Validation
 
-No attempt is made to test the puppet confiration directly. Instead, running
+No attempt is made to test the puppet configuration directly. Instead, running
 instances can be validated using `scripts/check-pages.py`. This downloads the
 index page from the compbox and validates that all the pages which that links to
 are accessible.
