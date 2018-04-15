@@ -6,6 +6,18 @@ things, including the creation of a VM suitable for use at a competition event.
 [puppet]: https://github.com/puppetlabs/puppet
 [srcomp]: https://github.com/PeterJCLaw/srcomp
 
+In particular, this configures the hosting of:
+ * [SRComp HTTP](https://github.com/PeterJCLaw/srcomp-http)
+ * [SRComp Stream](https://github.com/PeterJCLaw/srcomp-stream)
+ * [SRComp Screens](https://github.com/PeterJCLaw/srcomp-screens)
+ * An index page which links to the hosted services
+
+An `srcomp` user is created which has access to update the compstate deployed
+within the machine; this user is a suitable target for the
+[`srcomp deploy`][srcomp-deploy] command (and its siblings).
+
+[srcomp-deploy]: https://github.com/PeterJCLaw/srcomp/wiki/Common-Operations#deploying-changes
+
 ## Development
 
 A `Vagrantfile` and top-level manifest are provided for local development using
