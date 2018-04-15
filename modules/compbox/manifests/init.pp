@@ -50,6 +50,31 @@ class compbox {
         }
     }
 
+    define npm_install($ensure) {
+        $package_name = $title
+        if $manual_npm_installs {
+            if $ensure == 'absent'{
+                exec { "npm uninstall -g ${package_name}":
+                    onlyif      => "npm list -depth 0 -g ${package_name}",
+                    require     => Class['::nodejs'],
+                    provider    => 'shell',
+                }
+            } else {
+                exec { "npm install -g ${package_name}":
+                    unless      => "npm list -depth 0 -g ${package_name}",
+                    require     => Class['::nodejs'],
+                    provider    => 'shell',
+                }
+            }
+        } else {
+            package { 'bower':
+                ensure      => $ensure,
+                provider    => 'npm',
+                require     => Class['::nodejs'],
+            }
+        }
+    }
+
     exec { 'update package lists':
         command => '/usr/bin/apt-get update',
         before  => [Package['libyaml-dev']],
@@ -164,9 +189,8 @@ class compbox {
         repo_url_suffix         => '8.x',
         legacy_debian_symlinks  => false,
     } ->
-    package { 'bower':
-        ensure      => present,
-        provider    => npm,
+    compbox::npm_install { 'bower':
+        ensure  => present,
     }
 
     # Main webserver
@@ -192,7 +216,7 @@ class compbox {
         environment => 'HOME=/var/www',
         refreshonly => true,
         user        => 'www-data',
-        require     => Package['bower'],
+        require     => Compbox::Npm_install['bower'],
     }
     file { '/var/www/screens/config.json':
         ensure  => file,
