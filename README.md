@@ -14,7 +14,9 @@ In particular, this configures the hosting of:
 
 An `srcomp` user is created which has access to update the compstate deployed
 within the machine; this user is a suitable target for the
-[`srcomp deploy`][srcomp-deploy] command (and its siblings).
+[`srcomp deploy`][srcomp-deploy] command (and its siblings). Access to this user
+over SSH is granted by adding public keys to
+`modules/compbox/files/srcomp-authorized_keys`.
 
 [srcomp-deploy]: https://github.com/PeterJCLaw/srcomp/wiki/Common-Operations#deploying-changes
 
