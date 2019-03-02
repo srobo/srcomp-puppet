@@ -12,20 +12,25 @@ addWatcher('upstream stream', watchStream(upstreamBase + '/stream', ['team', 'pi
 addWatcher('upstream API', watchHTTP(upstreamBase + '/comp-api/arenas'));
 
 addWatcher('upstream sync', function(ack, err) {
-    request('http://localhost/comp-api/state', function(e, response, body) {
-        if (e) {
-            err("downstream " + e.message);
-        } else if (response.statusCode != 200) {
-            err("downstream " + response.statusCode);
-        } else {
-            var dsState = JSON.parse(body).state;
-            request(upstreamBase + '/comp-api/state', function(e, response, body) {
-                if (e) {
-                    err("upstream " + e.message);
-                } else if (response.statusCode != 200) {
-                    err("upstream " + response.statusCode);
-                } else {
-                    var usState = JSON.parse(body).state;
+    function handleStateResponse(label, next) {
+        return function(e, response, body) {
+            if (e) {
+                err(label + " " + e.message);
+            } else if (response.statusCode != 200) {
+                err(label + " " + response.statusCode);
+            } else {
+                var state = JSON.parse(body).state;
+                next(state);
+            }
+        }
+    }
+
+    request('http://localhost/comp-api/state', handleStateResponse(
+        "downstream",
+        function (dsState) {
+            request(upstreamBase + '/comp-api/state', handleStateResponse(
+                "upstream",
+                function(usState) {
                     if (dsState === usState) {
                         ack();
                     } else {
@@ -33,7 +38,7 @@ addWatcher('upstream sync', function(ack, err) {
                             "downstream " + dsState.substr(0, 7));
                     }
                 }
-            });
+            ));
         }
-    });
+    ));
 });
