@@ -19,7 +19,11 @@ addWatcher('upstream sync', function(ack, err) {
             } else if (response.statusCode != 200) {
                 err(label + " " + response.statusCode);
             } else {
-                var state = JSON.parse(body).state;
+                try {
+                    var state = JSON.parse(body).state;
+                } catch (e) {
+                    err(label + " returned invalid JSON");
+                }
                 next(state);
             }
         }
