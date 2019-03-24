@@ -13,3 +13,6 @@
 [submodule "modules/apt"]
 	path = modules/apt
 	url = https://github.com/puppetlabs/puppetlabs-apt
+[submodule "modules/translate"]
+	path = modules/translate
+	url = https://github.com/puppetlabs/puppetlabs-translate
