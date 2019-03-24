@@ -187,7 +187,6 @@ class compbox {
     # Screens and stream
     class { '::nodejs':
         repo_url_suffix         => '8.x',
-        legacy_debian_symlinks  => false,
     } ->
     compbox::npm_install { 'bower':
         ensure  => present,
