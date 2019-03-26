@@ -3,5 +3,6 @@
 cd $(dirname $0)
 
 git pull --ff-only
+git submodule update --init
 
 exec ./apply-puppet.sh
