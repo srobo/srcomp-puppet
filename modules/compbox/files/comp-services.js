@@ -23,6 +23,7 @@ addWatcher('upstream sync', function(ack, err) {
                     var state = JSON.parse(body).state;
                 } catch (e) {
                     err(label + " returned invalid JSON");
+                    return;
                 }
                 next(state);
             }
