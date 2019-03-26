@@ -80,6 +80,8 @@ class compbox {
         before  => [Package['libyaml-dev']],
     }
 
+    class { 'compbox::firewall': }
+
     # A user for shelling in to update the compstate
     user { 'srcomp':
         ensure      => present,

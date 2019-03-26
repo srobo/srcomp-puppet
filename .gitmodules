@@ -16,3 +16,6 @@
 [submodule "modules/translate"]
 	path = modules/translate
 	url = https://github.com/puppetlabs/puppetlabs-translate
+[submodule "modules/firewall"]
+	path = modules/firewall
+	url = https://github.com/puppetlabs/puppetlabs-firewall
