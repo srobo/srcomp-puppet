@@ -370,7 +370,7 @@ class compbox {
     file { '/etc/nginx/sites-enabled/compbox':
         ensure  => file,
         require => Package['nginx'],
-        source  => 'puppet:///modules/compbox/nginx',
+        content => template('compbox/nginx.conf.erb'),
         notify  => Service['nginx']
     }
 
