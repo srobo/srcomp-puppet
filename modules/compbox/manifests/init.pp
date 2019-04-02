@@ -1,6 +1,6 @@
 # Install and configure the services running on the compbox
 class compbox {
-    $comp_source    = 'git://github.com/PeterJCLaw'
+    $comp_source    = 'https://github.com/PeterJCLaw'
     $compstate      = 'https://github.com/PeterJCLaw/dummy-comp.git'
     $compstate_path = '/srv/state'
 
