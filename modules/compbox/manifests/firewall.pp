@@ -25,6 +25,19 @@ class compbox::firewall {
     provider  => 'ip6tables',
   }
 
+  # NTP
+  firewall { '100 allow ntp access':
+    dport  => 123,
+    proto  => tcp,
+    action => accept,
+  }
+  firewall { '100 allow ntp access (v6)':
+    dport     => 123,
+    proto     => tcp,
+    action    => accept,
+    provider  => 'ip6tables',
+  }
+
   # HTTP(S)
   firewall { '100 allow http and https access':
     dport  => [80, 443],
