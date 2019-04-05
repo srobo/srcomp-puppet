@@ -28,12 +28,12 @@ class compbox::firewall {
   # NTP
   firewall { '100 allow ntp access':
     dport  => 123,
-    proto  => tcp,
+    proto  => udp,
     action => accept,
   }
   firewall { '100 allow ntp access (v6)':
     dport     => 123,
-    proto     => tcp,
+    proto     => udp,
     action    => accept,
     provider  => 'ip6tables',
   }
