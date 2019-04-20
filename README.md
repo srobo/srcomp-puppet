@@ -27,10 +27,10 @@ A `Vagrantfile` and top-level manifest are provided for local development using
 port 8080 on the host machine. Visiting <http://localhost:8080> on the host
 should show a compbox welcome page once the VM is provisioned.
 
-Note: since deployment of the vagrant box is a supported scenario, the
-Vagrantfile compensates for the removal of the insecure vagrant public key SSH
-access by expecting that `config.ssh.private_key_path` will include a private
-key whose public key has been added to
+Note: since deployment of the vagrant box is a supported (but discouraged)
+scenario, the Vagrantfile compensates for the removal of the insecure vagrant
+public key SSH access by expecting that `config.ssh.private_key_path` will
+include a private key whose public key has been added to
 `modules/compbox/files/main-user-authorized_keys`.
 
 [vagrant]: http://vagrantup.com/
@@ -40,7 +40,7 @@ key whose public key has been added to
 Deployment is supported via three mechanisms:
 
  * to an existing VM
- * under vagrant
+ * under vagrant (note: this is discouraged)
  * using a Raspberry Pi
 
 In the latter two cases, the default (insecure) credential-based access over ssh
