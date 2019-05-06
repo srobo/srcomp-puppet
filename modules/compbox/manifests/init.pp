@@ -152,30 +152,30 @@ class compbox {
     }
 
     package { ['git',
-               'python-pip',
-               'python-setuptools',
-               'python-dev',
-               'python-requests']:
+               'python3-pip',
+               'python3-setuptools',
+               'python3-dev',
+               'python3-requests']:
         ensure => present
     } ->
     package { 'sr.comp.ranker':
         ensure   => $vcs_ensure,
-        provider => 'pip',
+        provider => 'pip3',
         source   => "git+${comp_source}/ranker.git"
     } ->
     package { 'sr.comp':
         ensure   => $vcs_ensure,
-        provider => 'pip',
+        provider => 'pip3',
         source   => "git+${comp_source}/srcomp.git"
     } ->
     package { 'sr.comp.http':
         ensure   => $vcs_ensure,
-        provider => 'pip',
+        provider => 'pip3',
         source   => "git+${comp_source}/srcomp-http.git"
     }
     package { 'sr.comp.cli':
         ensure   => $vcs_ensure,
-        provider => 'pip',
+        provider => 'pip3',
         source   => "git+${comp_source}/srcomp-cli.git",
         require  => Package['sr.comp']
     }
@@ -233,7 +233,7 @@ class compbox {
         require => Vcsrepo['/var/www/screens'],
     }
 
-    package { 'python-lxml':
+    package { 'python3-lxml':
         ensure => present
     }
 
@@ -300,8 +300,8 @@ class compbox {
     # API
     package { 'gunicorn':
         ensure   => present,
-        provider => 'pip',
-        require  => Package['python-pip']
+        provider => 'pip3',
+        require  => Package['python3-pip']
     }
     $compapi_logging_ini = '/var/www/srcomp-http-logging.ini'
     file { $compapi_logging_ini:
