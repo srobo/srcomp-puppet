@@ -155,6 +155,7 @@ class compbox {
                'python3-pip',
                'python3-setuptools',
                'python3-dev',
+               'python3-sphinx',
                'python3-requests']:
         ensure => present
     } ->
