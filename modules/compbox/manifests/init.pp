@@ -151,12 +151,24 @@ class compbox {
         require   => User['srcomp'],
     }
 
+    package { ['python3-mido',
+               'python3-paramiko',
+               'python3-pil',
+               'python3-reportlab',
+               'python3-requests',
+               'python3-ruamel.yaml',
+               'python3-six']:
+        ensure => present,
+        before => Package['sr.comp.cli'],
+    }
+
     package { ['git',
                'python3-pip',
                'python3-setuptools',
                'python3-dev',
+               'python3-simplejson',
                'python3-sphinx',
-               'python3-requests']:
+               'python3-yaml']:
         ensure => present
     } ->
     package { 'sr.comp.ranker':
