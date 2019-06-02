@@ -113,23 +113,11 @@ class compbox {
         require => [User['srcomp'],File[$srcomp_ssh_dir]],
     }
 
-    # A local srcomp-http checkout so we can use the update script.
-    # It should probably get installed as a CLI endpoint at some point.
-    $http_dir = "${srcomp_home_dir}/srcomp-http"
-    vcsrepo { $http_dir:
-        ensure   => present,
-        provider => git,
-        source   => "${comp_source}/srcomp-http.git",
-        user     => 'srcomp',
-        require  => User['srcomp'],
-    }
-
     # The location of the live compstate.
     $compstate_dir = $compstate_path
 
-    # The location of the 'virtualenv' in which the the srcomp things
-    # are installed. Not really a virtualenv on this machine of course.
-    $venv_dir = '/usr'
+    # Path to the Python to use for controlling updates to the HTTP API.
+    $python_path = '/usr/bin/python3'
 
     # Update script, configured for direct use (via the above two variables)
     file { "${srcomp_home_dir}/update":
@@ -138,9 +126,9 @@ class compbox {
         group   => 'users',
         # Only this user can run it
         mode    => '0744',
-        # Uses $compstate_dir, $http_dir, $venv_dir
+        # Uses $compstate_dir, $python_path
         content => template('compbox/srcomp-update.erb'),
-        require => [Vcsrepo[$http_dir],User['srcomp']],
+        require => User['srcomp'],
     }
 
     vcsrepo { $ref_compstate:
