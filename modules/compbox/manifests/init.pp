@@ -143,7 +143,6 @@ class compbox {
                'python3-paramiko',
                'python3-pil',
                'python3-reportlab',
-               'python3-requests',
                'python3-ruamel.yaml',
                'python3-six']:
         ensure => present,
@@ -151,13 +150,19 @@ class compbox {
     }
 
     package { ['git',
-               'python3-pip',
                'python3-setuptools',
                'python3-dev',
                'python3-simplejson',
                'python3-sphinx',
                'python3-yaml']:
         ensure => present
+    } ->
+    # Raspbians's system pip is unreliable (specifically it experiences a
+    # TypeError if it needs to retry a download).
+    exec { 'install pip':
+        # `--upgrade` to encourage easy_install to get a fresh copy from PyPI.
+        command => '/usr/bin/easy_install3 --upgrade pip',
+        creates => '/usr/local/bin/pip3',
     } ->
     package { 'sr.comp.ranker':
         ensure   => $vcs_ensure,
@@ -178,7 +183,7 @@ class compbox {
         ensure   => $vcs_ensure,
         provider => 'pip3',
         source   => "git+${comp_source}/srcomp-cli.git",
-        require  => Package['sr.comp']
+        require  => [Package['sr.comp'], Exec['install pip']],
     }
 
     # Yaml loading acceleration
@@ -302,7 +307,7 @@ class compbox {
     package { 'gunicorn':
         ensure   => present,
         provider => 'pip3',
-        require  => Package['python3-pip']
+        require  => Exec['install pip'],
     }
     $compapi_logging_ini = '/var/www/srcomp-http-logging.ini'
     file { $compapi_logging_ini:
