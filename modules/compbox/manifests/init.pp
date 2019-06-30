@@ -113,23 +113,11 @@ class compbox {
         require => [User['srcomp'],File[$srcomp_ssh_dir]],
     }
 
-    # A local srcomp-http checkout so we can use the update script.
-    # It should probably get installed as a CLI endpoint at some point.
-    $http_dir = "${srcomp_home_dir}/srcomp-http"
-    vcsrepo { $http_dir:
-        ensure   => present,
-        provider => git,
-        source   => "${comp_source}/srcomp-http.git",
-        user     => 'srcomp',
-        require  => User['srcomp'],
-    }
-
     # The location of the live compstate.
     $compstate_dir = $compstate_path
 
-    # The location of the 'virtualenv' in which the the srcomp things
-    # are installed. Not really a virtualenv on this machine of course.
-    $venv_dir = '/usr'
+    # Path to the Python to use for controlling updates to the HTTP API.
+    $python_path = '/usr/bin/python3'
 
     # Update script, configured for direct use (via the above two variables)
     file { "${srcomp_home_dir}/update":
@@ -138,9 +126,9 @@ class compbox {
         group   => 'users',
         # Only this user can run it
         mode    => '0744',
-        # Uses $compstate_dir, $http_dir, $venv_dir
+        # Uses $compstate_dir, $python_path
         content => template('compbox/srcomp-update.erb'),
-        require => [Vcsrepo[$http_dir],User['srcomp']],
+        require => User['srcomp'],
     }
 
     vcsrepo { $ref_compstate:
@@ -151,31 +139,44 @@ class compbox {
         require   => User['srcomp'],
     }
 
+    package { ['python3-mido',
+               'python3-paramiko',
+               'python3-pil',
+               'python3-reportlab',
+               'python3-requests',
+               'python3-ruamel.yaml',
+               'python3-six']:
+        ensure => present,
+        before => Package['sr.comp.cli'],
+    }
+
     package { ['git',
-               'python-pip',
-               'python-setuptools',
-               'python-dev',
-               'python-requests']:
+               'python3-pip',
+               'python3-setuptools',
+               'python3-dev',
+               'python3-simplejson',
+               'python3-sphinx',
+               'python3-yaml']:
         ensure => present
     } ->
     package { 'sr.comp.ranker':
         ensure   => $vcs_ensure,
-        provider => 'pip',
+        provider => 'pip3',
         source   => "git+${comp_source}/ranker.git"
     } ->
     package { 'sr.comp':
         ensure   => $vcs_ensure,
-        provider => 'pip',
+        provider => 'pip3',
         source   => "git+${comp_source}/srcomp.git"
     } ->
     package { 'sr.comp.http':
         ensure   => $vcs_ensure,
-        provider => 'pip',
+        provider => 'pip3',
         source   => "git+${comp_source}/srcomp-http.git"
     }
     package { 'sr.comp.cli':
         ensure   => $vcs_ensure,
-        provider => 'pip',
+        provider => 'pip3',
         source   => "git+${comp_source}/srcomp-cli.git",
         require  => Package['sr.comp']
     }
@@ -233,7 +234,7 @@ class compbox {
         require => Vcsrepo['/var/www/screens'],
     }
 
-    package { 'python-lxml':
+    package { 'python3-lxml':
         ensure => present
     }
 
@@ -300,8 +301,8 @@ class compbox {
     # API
     package { 'gunicorn':
         ensure   => present,
-        provider => 'pip',
-        require  => Package['python-pip']
+        provider => 'pip3',
+        require  => Package['python3-pip']
     }
     $compapi_logging_ini = '/var/www/srcomp-http-logging.ini'
     file { $compapi_logging_ini:
