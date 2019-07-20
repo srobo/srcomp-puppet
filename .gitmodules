@@ -19,3 +19,9 @@
 [submodule "modules/firewall"]
 	path = modules/firewall
 	url = https://github.com/puppetlabs/puppetlabs-firewall
+[submodule "modules/letsencrypt"]
+	path = modules/letsencrypt
+	url = https://github.com/voxpupuli/puppet-letsencrypt
+[submodule "modules/inifile"]
+	path = modules/inifile
+	url = https://github.com/puppetlabs/puppetlabs-inifile

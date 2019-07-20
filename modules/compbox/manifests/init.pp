@@ -362,13 +362,41 @@ class compbox {
     }
 
     # Nginx configuration
+    $www_hostname = $::fqdn
+    if $enable_tls {
+        package { 'python3-certbot-nginx':
+            ensure  => present,
+        }
+
+        class { letsencrypt:
+            # Note: if setting up a server for testing, you may want to un-comment
+            # these lines to avoid polling the live letsencrypt API too much and
+            # getting rate limited.
+            # config => {
+            #     server  => 'https://acme-staging.api.letsencrypt.org/directory',
+            # },
+            unsafe_registration => true,
+        }
+
+        letsencrypt::certonly { $www_hostname:
+            plugin  => nginx,
+            require => Package['nginx', 'python3-certbot-nginx'],
+            # Ensure the initial certificate request gets handled by the default
+            # configuration as our custom config directly references the
+            # certificate, which otherwise doesn't exist yet.
+            before  => File[
+                '/etc/nginx/sites-enabled/default',
+                '/etc/nginx/sites-enabled/compbox',
+            ],
+        }
+    }
+
     file { '/etc/nginx/sites-enabled/default':
         ensure  => absent,
         require => Package['nginx'],
         notify  => Service['nginx']
     }
 
-    $www_hostname = $::fqdn
     file { '/etc/nginx/sites-enabled/compbox':
         ensure  => file,
         require => Package['nginx'],
