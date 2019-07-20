@@ -3,17 +3,17 @@ server {
     listen [::]:80 default_server ipv6only=on;
 
 <% if @enable_tls %>
-    server_name     srcomp.studentrobotics.org;
+    server_name     <%= @www_hostname %>;
     return          301 https://$server_name$request_uri;
 }
 server {
     listen 443 ssl;
     listen [::]:443 ssl ipv6only=on;
 
-    server_name     srcomp.studentrobotics.org;
+    server_name     <%= @www_hostname %>;
 
-    ssl_certificate /etc/letsencrypt/live/srcomp.studentrobotics.org/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/srcomp.studentrobotics.org/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/<%= @www_hostname %>/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/<%= @www_hostname %>/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 <% else %>

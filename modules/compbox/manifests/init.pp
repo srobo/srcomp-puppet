@@ -368,6 +368,7 @@ class compbox {
         notify  => Service['nginx']
     }
 
+    $www_hostname = $::fqdn
     file { '/etc/nginx/sites-enabled/compbox':
         ensure  => file,
         require => Package['nginx'],
