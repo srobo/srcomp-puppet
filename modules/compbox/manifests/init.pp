@@ -362,13 +362,31 @@ class compbox {
     }
 
     # Nginx configuration
+    $www_hostname = $::fqdn
+    if $enable_tls {
+        package { 'python3-certbot-nginx':
+            ensure  => present,
+        }
+
+        class { letsencrypt:
+            config => {
+                server  => 'https://acme-staging.api.letsencrypt.org/directory',
+            },
+            unsafe_registration => true,
+        }
+
+        letsencrypt::certonly { $www_hostname:
+            plugin  => nginx,
+            require => Package['nginx', 'python3-certbot-nginx'],
+        }
+    }
+
     file { '/etc/nginx/sites-enabled/default':
         ensure  => absent,
         require => Package['nginx'],
         notify  => Service['nginx']
     }
 
-    $www_hostname = $::fqdn
     file { '/etc/nginx/sites-enabled/compbox':
         ensure  => file,
         require => Package['nginx'],
