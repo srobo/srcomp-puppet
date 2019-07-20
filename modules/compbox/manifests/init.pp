@@ -378,6 +378,13 @@ class compbox {
         letsencrypt::certonly { $www_hostname:
             plugin  => nginx,
             require => Package['nginx', 'python3-certbot-nginx'],
+            # Ensure the initial certificate request gets handled by the default
+            # configuration as our custom config directly references the
+            # certificate, which otherwise doesn't exist yet.
+            before  => File[
+                '/etc/nginx/sites-enabled/default',
+                '/etc/nginx/sites-enabled/compbox',
+            ],
         }
     }
 
