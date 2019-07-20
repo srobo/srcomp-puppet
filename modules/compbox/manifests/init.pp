@@ -369,9 +369,12 @@ class compbox {
         }
 
         class { letsencrypt:
-            config => {
-                server  => 'https://acme-staging.api.letsencrypt.org/directory',
-            },
+            # Note: if setting up a server for testing, you may want to un-comment
+            # these lines to avoid polling the live letsencrypt API too much and
+            # getting rate limited.
+            # config => {
+            #     server  => 'https://acme-staging.api.letsencrypt.org/directory',
+            # },
             unsafe_registration => true,
         }
 
