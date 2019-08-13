@@ -7,6 +7,6 @@ node default {
     include compbox
 
     class { 'compbox::hostname':
-        hostname    => 'compbox-2019.srobo',
+        hostname    => 'compbox-2019.sb',
     }
 }
