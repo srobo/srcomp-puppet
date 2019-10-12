@@ -3,7 +3,7 @@
 	url = https://github.com/puppetlabs/puppetlabs-vcsrepo
 [submodule "modules/stdlib"]
 	path = modules/stdlib
-	url = git://github.com/puppetlabs/puppetlabs-stdlib.git
+	url = https://github.com/puppetlabs/puppetlabs-stdlib.git
 [submodule "modules/ntp"]
 	path = modules/ntp
 	url = https://github.com/puppetlabs/puppetlabs-ntp
