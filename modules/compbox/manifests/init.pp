@@ -159,11 +159,6 @@ class compbox {
                'python3-yaml']:
         ensure => present
     } ->
-    package { 'sr.comp.ranker':
-        ensure   => $vcs_ensure,
-        provider => 'pip3',
-        source   => "git+${comp_source}/ranker.git"
-    } ->
     package { 'sr.comp':
         ensure   => $vcs_ensure,
         provider => 'pip3',
