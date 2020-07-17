@@ -1,6 +1,6 @@
 from sr.comp.http import app
 
-from werkzeug.wsgi import DispatcherMiddleware
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
 app.config['COMPSTATE'] = '<%= @compstate_path %>'
 
