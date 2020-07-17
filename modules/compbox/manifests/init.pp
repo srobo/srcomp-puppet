@@ -319,7 +319,6 @@ class compbox {
         require => [Package['gunicorn'],
                     VCSRepo[$compstate_path]],
         subs    => [File[$compapi_wsgi],
-                    Package['sr.comp.ranker'],
                     Package['sr.comp'],
                     Package['sr.comp.http']]
     }
