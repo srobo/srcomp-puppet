@@ -224,7 +224,7 @@ class compbox {
 
     file { '/var/www/screens/compbox-index.html':
         ensure  => file,
-        source  => 'puppet:///modules/compbox/compbox-index.html',
+        content => template('compbox/compbox-index.html.erb'),
         owner   => 'www-data',
         require => Vcsrepo['/var/www/screens'],
     }
