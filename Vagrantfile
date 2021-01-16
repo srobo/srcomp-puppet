@@ -8,7 +8,7 @@ Vagrant.configure("2") do |config|
     config.vm.network "forwarded_port", guest: 80, host: 8080
     config.vm.hostname = "compbox.srobo"
 
-    config.ssh.private_key_path = ['~/.vagrant.d/insecure_private_key', '~/.ssh/id_rsa']
+    config.ssh.private_key_path = ['~/.vagrant.d/insecure_private_key', '~/.ssh/id_ed25519']
     config.ssh.insert_key = false
 
     # Bootstrap
