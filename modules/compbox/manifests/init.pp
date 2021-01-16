@@ -222,6 +222,37 @@ class compbox {
         require => Vcsrepo['/var/www/screens'],
     }
 
+    vcsrepo { '/var/www/livestream-overlay':
+        ensure   => $vcs_ensure,
+        provider => git,
+        source   => "https://github.com/PeterJCLaw/livestream-overlay.git",
+        owner    => 'www-data',
+        revision => 'e2901c90edcd2c8932719bebe84e061872728b1f',
+    } ~>
+    exec { 'install livestream-overlay dependencies':
+        command     => '/usr/bin/npm install',
+        cwd         => '/var/www/livestream-overlay',
+        environment => 'HOME=/var/www',
+        path        => ['/usr/local/bin', '/usr/bin', '/bin'],
+        refreshonly => true,
+        user        => 'www-data',
+        require     => Class['::nodejs'],
+    } ~>
+    exec { 'build livestream-overlay':
+        command     => '/usr/bin/npm run build',
+        cwd         => '/var/www/livestream-overlay',
+        environment => 'HOME=/var/www',
+        refreshonly => true,
+        user        => 'www-data',
+        require     => Class['::nodejs'],
+    }
+    file { '/var/www/livestream-overlay/settings.js':
+        ensure  => file,
+        content => template('compbox/livestream-overlay-settings.js.erb'),
+        owner   => 'www-data',
+        require => Vcsrepo['/var/www/livestream-overlay'],
+    }
+
     file { '/var/www/screens/compbox-index.html':
         ensure  => file,
         content => template('compbox/compbox-index.html.erb'),

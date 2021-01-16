@@ -27,6 +27,11 @@ server {
         root /var/www/screens;
     }
 
+    location /livestream-overlay/ {
+        root /var/www;
+        index stream.html;
+    }
+
     location = /stream {
         proxy_pass http://localhost:5001/;
         proxy_buffering off;
