@@ -25,3 +25,6 @@
 [submodule "modules/inifile"]
 	path = modules/inifile
 	url = https://github.com/puppetlabs/puppetlabs-inifile
+[submodule "modules/snapd"]
+	path = modules/snapd
+	url = https://github.com/ethanhs/puppet-snapd

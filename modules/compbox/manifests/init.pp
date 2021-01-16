@@ -358,8 +358,9 @@ class compbox {
     # Nginx configuration
     $www_hostname = $::fqdn
     if $enable_tls {
-        package { 'python3-certbot-nginx':
-            ensure  => present,
+        package { 'certbot':
+            ensure      => present,
+            provider    => snap,
         }
 
         class { letsencrypt:
@@ -374,7 +375,7 @@ class compbox {
 
         letsencrypt::certonly { $www_hostname:
             plugin  => nginx,
-            require => Package['nginx', 'python3-certbot-nginx'],
+            require => Package['nginx', 'certbot'],
             # Ensure the initial certificate request gets handled by the default
             # configuration as our custom config directly references the
             # certificate, which otherwise doesn't exist yet.
