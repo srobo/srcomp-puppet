@@ -371,6 +371,8 @@ class compbox {
             #     server  => 'https://acme-staging.api.letsencrypt.org/directory',
             # },
             unsafe_registration => true,
+            manage_install      => false,
+            require             => Package['certbot'],
         }
 
         letsencrypt::certonly { $www_hostname:
