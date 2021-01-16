@@ -292,6 +292,11 @@ class compbox {
                     # Subscribe to the API to get config changes
                     Service['srcomp-http']]
     }
+    file { '/var/www/html/stream-404.html':
+        ensure  => file,
+        source  => 'puppet:///modules/compbox/stream-404.html',
+        notify  => Service['nginx']
+    }
 
     # API
     package { 'gunicorn':
