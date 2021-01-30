@@ -227,7 +227,7 @@ class compbox {
         provider => git,
         source   => "https://github.com/PeterJCLaw/livestream-overlay.git",
         owner    => 'www-data',
-        revision => '5a7acc10a133bac63ab8c267d0a8d8f986438242',
+        revision => 'c5e8abac0eddc0f81c9968727cc542fa98ebf8c1',
     } ~>
     exec { 'install livestream-overlay dependencies':
         command     => '/usr/bin/npm install',
