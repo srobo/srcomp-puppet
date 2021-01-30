@@ -39,7 +39,7 @@ include a private key whose public key has been added to
 
 Deployment is supported via three mechanisms:
 
- * to an existing VM
+ * to an existing VM ([setup instructions](./new-machine.md))
  * under vagrant (note: this is discouraged)
  * using a Raspberry Pi
 
@@ -47,6 +47,12 @@ In the latter two cases, the default (insecure) credential-based access over ssh
 to the default user (as well as `root`) are disabled. Access to the main user is
 available via SSH using keys whose public keys are in
 `modules/compbox/files/main-user-authorized_keys`.
+
+The default state of a fresh machine is configured around the dummy compstate.
+Therefore the first time you deploy your own compstate you may get a warning
+that the compstate being deployed isn't related to the current deployment. This
+is obviously expected on your first deploy, but should be carefully regarded
+thereafter.
 
 ## Validation
 
