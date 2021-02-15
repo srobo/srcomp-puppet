@@ -39,7 +39,7 @@ include a private key whose public key has been added to
 
 Deployment is supported via three mechanisms:
 
- * to an existing VM ([setup instructions](./new-machine.md))
+ * to a VM ([setup instructions](./new-machine.md))
  * under vagrant (note: this is discouraged)
  * using a Raspberry Pi
 
