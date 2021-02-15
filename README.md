@@ -76,6 +76,14 @@ are accessible.
 
 Note: this does not validate `SSH` or `NTP` access.
 
+## Updates
+
+Once deployed it is possible to update a deployment using:
+
+``` shell
+/etc/puppet/scripts/update
+```
+
 ## Setup Notes
 
 At the test day we had an issue where even after enabling `public_network`
