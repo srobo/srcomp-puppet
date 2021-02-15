@@ -49,6 +49,18 @@ your own admin account (the instructions guide doing this). For other two cases,
 access to the main user is available via SSH using keys whose public keys are in
 `modules/compbox/files/main-user-authorized_keys`.
 
+However you run it, the compbox will provide the following services. These will
+all be [allowed through its firewall](modules/compbox/manifests/firewall.pp),
+though if you are going to put it behind a proxy of any kind you'll need to
+ensure access to all of these is available:
+
+ * `SSH` (needed for compstate deployment)
+ * `NTP` (to keep the screens clocks in sync)
+ * `HTTPS` (for the API, stream and hosted pages)
+
+Note that TLS is automatically configured via Let's Encrypt, so in general there
+should be no need to put the compbox behind a proxy.
+
 The default state of a fresh machine is configured around the dummy compstate.
 Therefore the first time you deploy your own compstate you may get a warning
 that the compstate being deployed isn't related to the current deployment. This
