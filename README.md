@@ -58,8 +58,10 @@ ensure access to all of these is available:
  * `NTP` (to keep the screens clocks in sync)
  * `HTTPS` (for the API, stream and hosted pages)
 
-Note that TLS is automatically configured via Let's Encrypt, so in general there
-should be no need to put the compbox behind a proxy.
+Note that, for the hosted VM case only, TLS is automatically configured via
+Let's Encrypt. As a result in general there should be no need to put the compbox
+behind a proxy. However such configurations do therefore also need insecure
+`HTTP` access (which is used to bootstrap the HTTPS configuration).
 
 The default state of a fresh machine is configured around the dummy compstate.
 Therefore the first time you deploy your own compstate you may get a warning
