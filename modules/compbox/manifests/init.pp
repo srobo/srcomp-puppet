@@ -457,25 +457,26 @@ class compbox {
             source  => 'puppet:///modules/compbox/main-user-authorized_keys',
             require => File["/home/${main_user}/.ssh"],
         }
-        augeas { 'sshd_config':
-            context => '/files/etc/ssh/sshd_config',
-            changes => [
-                # deny root logins
-                'set PermitRootLogin no',
-                # deny logins using passwords
-                'set PasswordAuthentication no',
-            ],
-            notify  => Service['sshd'],
-        }
-        service { 'sshd':
-            ensure  => running,
-            name    => $::osfamily ? {
-                'Debian'  => 'ssh',
-                default   => 'sshd',
-            },
-            enable  => true,
-            require => Augeas['sshd_config'],
-        }
+    }
+
+    augeas { 'sshd_config':
+        context => '/files/etc/ssh/sshd_config',
+        changes => [
+            # deny root logins
+            'set PermitRootLogin no',
+            # deny logins using passwords
+            'set PasswordAuthentication no',
+        ],
+        notify  => Service['sshd'],
+    }
+    service { 'sshd':
+        ensure  => running,
+        name    => $::osfamily ? {
+            'Debian'  => 'ssh',
+            default   => 'sshd',
+        },
+        enable  => true,
+        require => Augeas['sshd_config'],
     }
 
     # Useful packages

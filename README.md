@@ -43,9 +43,10 @@ Deployment is supported via three mechanisms:
  * under vagrant (note: this is discouraged)
  * using a Raspberry Pi
 
-In the latter two cases, the default (insecure) credential-based access over ssh
-to the default user (as well as `root`) are disabled. Access to the main user is
-available via SSH using keys whose public keys are in
+Note that the default (insecure) credential-based access over ssh to the default
+user (as well as `root`) are disabled. For the VM setup you should configure
+your own admin account (the instructions guide doing this). For other two cases,
+access to the main user is available via SSH using keys whose public keys are in
 `modules/compbox/files/main-user-authorized_keys`.
 
 The default state of a fresh machine is configured around the dummy compstate.
