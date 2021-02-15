@@ -74,6 +74,8 @@ instances can be validated using `scripts/check-pages.py`. This downloads the
 index page from the compbox and validates that all the pages which that links to
 are accessible.
 
+Note: this does not validate `SSH` or `NTP` access.
+
 ## Setup Notes
 
 At the test day we had an issue where even after enabling `public_network`
