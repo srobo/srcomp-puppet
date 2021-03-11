@@ -56,3 +56,5 @@
     ```bash
     /etc/puppet/scripts/update
     ```
+
+13. Now deploy your compstate using `srcomp deploy` locally.
