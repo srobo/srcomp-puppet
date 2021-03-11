@@ -27,7 +27,7 @@ class compbox::fw_pre {
 
   # Default firewall rules (IPv6)
   firewall { '000 accept all icmp (v6)':
-    proto     => 'icmp',
+    proto     => 'icmpv6',
     action    => 'accept',
     provider  => 'ip6tables',
   }->
