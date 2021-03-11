@@ -43,17 +43,15 @@
 
 9. Set up public DNS for the machine.
 
-10. Edit `/etc/puppet/modules/compbox/manifests/init.pp` to change the `$compstate` variable to point at your compstate.
+10. (Optional) If setting up a deployment that will have a different upstream than `srcomp.studentrobotics.org` then you will have to modify `upstreamBase` in `/etc/puppet/modules/compbox/files/comp-services.js`
 
-11. (Optional) If setting up a deployment that will have a different upstream than `srcomp.studentrobotics.org` then you will have to modify `upstreamBase` in `/etc/puppet/modules/compbox/files/comp-services.js`
-
-12. Run the install:
+11. Run the install:
 
     ```bash
     /etc/puppet/scripts/install
     ```
 
-13. Update as needed if things change in puppet:
+12. Update as needed if things change in puppet:
 
     ```bash
     /etc/puppet/scripts/update
