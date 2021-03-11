@@ -13,7 +13,7 @@
 3. Create a non-root user with `sudo` access:
 
     ```bash
-    useradd --create-home --user-group --groups sudo $USERNAME --s /bin/bash
+    useradd --create-home --user-group --groups sudo $USERNAME --shell /bin/bash
     ```
 
 4. Set the password for that account (so it can `sudo`):
