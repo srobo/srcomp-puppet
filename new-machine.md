@@ -13,7 +13,7 @@
 3. Create a non-root user with `sudo` access:
 
     ```bash
-    useradd --create-home --user-group --groups sudo $USERNAME
+    useradd --create-home --user-group --groups sudo $USERNAME --shell /bin/bash
     ```
 
 4. Set the password for that account (so it can `sudo`):
@@ -43,14 +43,18 @@
 
 9. Set up public DNS for the machine.
 
-10. Run the install:
+10. (Optional) If setting up a deployment that will have a different upstream than `srcomp.studentrobotics.org` then you will have to modify `upstreamBase` in `/etc/puppet/modules/compbox/files/comp-services.js`
+
+11. Run the install:
 
     ```bash
     /etc/puppet/scripts/install
     ```
 
-11. Update as needed if things change in puppet:
+12. Update as needed if things change in puppet:
 
     ```bash
     /etc/puppet/scripts/update
     ```
+
+13. Now deploy your compstate using `srcomp deploy` locally.
