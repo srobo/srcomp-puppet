@@ -51,10 +51,13 @@
     /etc/puppet/scripts/install
     ```
 
-12. Now deploy your compstate using `srcomp deploy` locally.
+12. Deploy your compstate using `srcomp deploy` locally. For details on how to
+    configure your deployments, see the docs for the [`deploy` command][deploy-docs].
 
 If things change in puppet and you need to re-deploy, you can do so with this command:
 
 ```bash
 /etc/puppet/scripts/update
 ```
+
+[deploy-docs]: https://srcomp-cli.readthedocs.io/en/latest/commands/deploy.html
