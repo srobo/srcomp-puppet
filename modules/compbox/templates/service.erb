@@ -6,6 +6,8 @@ After=<%= @depends_str %>
 User=<%= @user %>
 
 Type=simple
+Restart=on-failure
+MemoryLimit=150M
 
 <% if @start_dir %>
 WorkingDirectory=<%= @start_dir %>
