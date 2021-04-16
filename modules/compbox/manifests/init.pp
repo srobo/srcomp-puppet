@@ -318,7 +318,7 @@ class compbox {
         user    => 'www-data',
         command => '/usr/bin/node main.js',
         memory_limit => '150M',
-        depends => ['srcomp-http'],
+        depends => ['srcomp-http.service'],
         require => Class['nodejs'],
         subs    => [Exec['build stream'],
                     File['/var/www/stream/config.coffee'],
