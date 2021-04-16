@@ -16,6 +16,7 @@ class compbox {
                            $user,
                            $desc,
                            $dir = undef,
+                           $memory_limit = undef,
                            $depends = ['network.target'],
                            $subs = []) {
         $service_name = "${title}.service"
@@ -316,6 +317,7 @@ class compbox {
         dir     => '/var/www/stream',
         user    => 'www-data',
         command => '/usr/bin/node main.js',
+        memory_limit => '150M',
         depends => ['srcomp-http'],
         require => Class['nodejs'],
         subs    => [Exec['build stream'],

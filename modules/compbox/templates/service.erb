@@ -7,7 +7,9 @@ User=<%= @user %>
 
 Type=simple
 Restart=on-failure
-MemoryLimit=150M
+<% if @memory_limit %>
+MemoryLimit=<%= @memory_limit %>
+<% end %>
 
 <% if @start_dir %>
 WorkingDirectory=<%= @start_dir %>
