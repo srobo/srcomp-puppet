@@ -68,7 +68,7 @@ class compbox {
                 }
             }
         } else {
-            package { 'bower':
+            package { $package_name:
                 ensure      => $ensure,
                 provider    => 'npm',
                 require     => Class['::nodejs'],
