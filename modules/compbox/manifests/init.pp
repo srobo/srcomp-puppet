@@ -187,7 +187,7 @@ class compbox {
     class { '::nodejs':
         repo_url_suffix         => '10.x',
     } ->
-    compbox::npm_install { 'bower':
+    compbox::npm_install { 'yarn':
         ensure  => present,
     }
 
@@ -209,12 +209,12 @@ class compbox {
         owner    => 'www-data'
     } ~>
     exec { 'build screens':
-        command     => '/usr/bin/bower install',
+        command     => '/usr/local/lib/node_modules/.bin/yarn install',
         cwd         => '/var/www/screens',
         environment => 'HOME=/var/www',
         refreshonly => true,
         user        => 'www-data',
-        require     => Compbox::Npm_install['bower'],
+        require     => Compbox::Npm_install['yarn'],
     }
     file { '/var/www/screens/config.json':
         ensure  => file,
