@@ -209,7 +209,7 @@ class compbox {
         owner    => 'www-data'
     } ~>
     exec { 'build screens':
-        command     => '/usr/local/lib/node_modules/.bin/yarn install',
+        command     => '/usr/bin/yarn install',
         cwd         => '/var/www/screens',
         environment => 'HOME=/var/www',
         refreshonly => true,
