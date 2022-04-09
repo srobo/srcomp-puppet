@@ -396,6 +396,9 @@ class compbox {
     # Nginx configuration
     $www_hostname = $::fqdn
     if $enable_tls {
+        package { 'snapd':
+            ensure      => present,
+        } ->
         package { 'certbot':
             ensure      => present,
             provider    => snap,
