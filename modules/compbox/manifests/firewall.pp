@@ -50,4 +50,13 @@ class compbox::firewall {
     action    => accept,
     provider  => 'ip6tables',
   }
+
+  # Mythic Beasts
+  firewall { '200 allow Mythic Beasts\' monitoring access (v6)':
+    dport     => 4949,
+    source    => '2a00:1098:80:bc::2:1',
+    proto     => tcp,
+    action    => accept,
+    provider  => 'ip6tables',
+  }
 }
