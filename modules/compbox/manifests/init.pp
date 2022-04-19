@@ -206,7 +206,7 @@ class compbox {
         ensure   => $vcs_ensure,
         provider => git,
         source   => "${comp_source}/srcomp-screens.git",
-        owner    => 'www-data'
+        user     => 'www-data'
     } ~>
     exec { 'build screens':
         command     => '/usr/bin/yarn install',
@@ -227,7 +227,7 @@ class compbox {
         ensure   => $vcs_ensure,
         provider => git,
         source   => "https://github.com/PeterJCLaw/livestream-overlay.git",
-        owner    => 'www-data',
+        user     => 'www-data',
         revision => 'c5e8abac0eddc0f81c9968727cc542fa98ebf8c1',
     } ~>
     exec { 'install livestream-overlay dependencies':
@@ -271,7 +271,7 @@ class compbox {
         provider => git,
         source   => $ref_compstate,
         group    => 'www-data',
-        owner    => 'srcomp',
+        user     => 'srcomp',
         require  => [User['srcomp'],Vcsrepo[$ref_compstate]],
     }
     # Update trigger and lock files
@@ -303,7 +303,7 @@ class compbox {
         ensure   => $vcs_ensure,
         provider => git,
         source   => "${comp_source}/srcomp-stream.git",
-        owner    => 'www-data',
+        user     => 'www-data',
         require  => File['/var/www']
     } ~>
     exec { 'build stream':
@@ -373,7 +373,7 @@ class compbox {
         ensure   => $vcs_ensure,
         provider => git,
         source   => 'https://github.com/PeterJCLaw/nwatchlive',
-        owner    => 'www-data',
+        user     => 'www-data',
         require  => File['/var/www']
     } ~>
     exec { 'build nwatchlive':
