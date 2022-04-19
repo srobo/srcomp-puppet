@@ -294,7 +294,7 @@ class compbox {
     # even though it's owned by another user (namely the srcmop user).
     file { '/var/www/.gitconfig':
         ensure  => file,
-        content => "[safe]\n\tdirectory = ${compstate_path}",
+        content => "[safe]\n\tdirectory = ${compstate_path}\n",
         owner   => 'www-data',
     }
 
