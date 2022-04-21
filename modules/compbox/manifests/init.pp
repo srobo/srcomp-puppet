@@ -81,6 +81,8 @@ class compbox {
         before  => [Package['libyaml-dev']],
     }
 
+    class { 'compbox::autossh': }
+
     class { 'compbox::firewall': }
 
     # A user for shelling in to update the compstate
