@@ -25,3 +25,6 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDntR0sqXTIdCyJv71YlF1L270GkQXADMZEne3bHmzzS
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMQ29ppfbkqayZkg5unKdKM8EAmQtfgkgG3mjEwYR/kz autossh@pi-livestream-dt1.srobo
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKQW6ImXY+wXBxJIswlGF/hGPRovcDHWllaI2VUXdp1N autossh@pi-livestream-dt2.srobo
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPuZPI/lSUpCGHqbIPsumgoOSCPpaPSn6BDcEKvDDJoP autossh@pi-livestream-dt3.srobo
+
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILuQRgqnsfLhxl6tagg8a+QFv6TGNhUpCMaA3hUmW+OR autossh@pi-livestream-jss0.srobo
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBMWDvRBgkLm3jYwnMVbLfRXdi9sIQV7cmFR8MNWyr5K autossh@pi-livestream-jss1.srobo
