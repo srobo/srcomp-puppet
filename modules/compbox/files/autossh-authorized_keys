@@ -4,3 +4,8 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQClDxpj2DdAkKblifJt6m72HcJTh8i3QAFZUsrE5xYk
 
 # TODO: populate this file with the keys generated on the Pis
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGxQ4xkBV8cQ1x5TE02POCjEeGW+eZ4Xzh76bT9vlRiZ autossh@peters-pi.local
+
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH67VyZ+VzDOh9jjVJ9w6VmIvDpnX89RvdtsE5ImZHdf autossh@pi-arena-main0.srobo
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILgmMIqBKtfajvS93+KBa9OoplYeQkCVH9l0MXtZ7FWJ autossh@pi-arena-main1.srobo
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEzmrhmjvFJAVk+pUUe51L7vWKBKfSDRGEfO7lC0elkL autossh@pi-arena-main2.srobo
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIElcIKJjYcy94+j8hBrBxp3IX4QhzYp2tSequwrcpVtx autossh@pi-arena-main3.srobo
