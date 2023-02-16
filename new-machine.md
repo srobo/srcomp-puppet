@@ -29,6 +29,14 @@
    probably want to `sudo su` at this point.
 
 6. Configure key based SSH access for that user.
+   This might look something like:
+   
+   ``` bash
+   su $USERNAME
+   mkdir --parents --mode=700 ~/.ssh
+   wget https://github.com/$THEIR_GITHUB_USERNAME.keys -O ~/.ssh/authorized_keys
+   chmod 600 .ssh/authorized_keys
+   ```
 
 7. Repeat for another user, so that more than one person has access to
    administer the machine.
