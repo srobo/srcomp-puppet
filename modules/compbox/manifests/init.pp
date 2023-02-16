@@ -272,8 +272,9 @@ class compbox {
         ensure   => present,
         provider => git,
         source   => $ref_compstate,
+        user     => 'root',
+        owner    => 'srcomp',
         group    => 'www-data',
-        user     => 'srcomp',
         require  => [User['srcomp'],Vcsrepo[$ref_compstate]],
     }
     # Update trigger and lock files
