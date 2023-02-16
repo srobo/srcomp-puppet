@@ -158,7 +158,6 @@ class compbox {
                'python3-setuptools',
                'python3-dev',
                'python3-simplejson',
-               'python3-sphinx',
                'python3-yaml']:
         ensure => present
     } ->
