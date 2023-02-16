@@ -33,7 +33,7 @@ public key SSH access by expecting that `config.ssh.private_key_path` will
 include a private key whose public key has been added to
 `modules/compbox/files/main-user-authorized_keys`.
 
-[vagrant]: http://vagrantup.com/
+[vagrant]: https://vagrantup.com/
 
 ## Deployment
 
