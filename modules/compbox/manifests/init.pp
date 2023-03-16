@@ -1,5 +1,10 @@
 # Install and configure the services running on the compbox
-class compbox {
+class compbox (
+    Boolean             $configure_main_user_access = true,
+    Optional[String[1]] $main_user                  = undef,
+    Boolean             $manual_npm_installs        = false,
+    Boolean             $enable_tls                 = false,
+) {
     $comp_source    = 'https://github.com/PeterJCLaw'
     $compstate      = 'https://github.com/PeterJCLaw/dummy-comp.git'
     $compstate_path = '/srv/state'
@@ -51,7 +56,7 @@ class compbox {
         }
     }
 
-    define npm_install($ensure) {
+    define npm_install($ensure, $manual_npm_installs) {
         $package_name = $title
         if $manual_npm_installs {
             if $ensure == 'absent'{
@@ -189,7 +194,8 @@ class compbox {
         repo_url_suffix         => '16.x',
     } ->
     compbox::npm_install { 'yarn':
-        ensure  => present,
+        ensure              => present,
+        manual_npm_installs => $manual_npm_installs,
     }
 
     # Main webserver
@@ -458,6 +464,10 @@ class compbox {
     }
 
     if $configure_main_user_access {
+        if $main_user == undef {
+            fail("Must set main user when requesting to configure it")
+        }
+
         # Login configuration
         file { "/home/${main_user}/.ssh":
             ensure  => directory,
