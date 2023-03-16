@@ -5,6 +5,7 @@ class compbox (
     Boolean             $manual_npm_installs        = false,
     Boolean             $enable_tls                 = false,
     Boolean             $track_source               = false,
+    Array[String[1]]    $secondary_domains          = [],
 ) {
     $comp_source    = 'https://github.com/PeterJCLaw'
     $compstate      = 'https://github.com/PeterJCLaw/dummy-comp.git'
@@ -432,6 +433,7 @@ class compbox (
 
         letsencrypt::certonly { $www_hostname:
             plugin  => nginx,
+            domains => [$www_hostname] + $secondary_domains,
             require => Package['nginx', 'certbot'],
             # Ensure the initial certificate request gets handled by the default
             # configuration as our custom config directly references the
