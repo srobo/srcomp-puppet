@@ -4,12 +4,11 @@ class compbox (
     Optional[String[1]] $main_user                  = undef,
     Boolean             $manual_npm_installs        = false,
     Boolean             $enable_tls                 = false,
+    Boolean             $track_source               = false,
 ) {
     $comp_source    = 'https://github.com/PeterJCLaw'
     $compstate      = 'https://github.com/PeterJCLaw/dummy-comp.git'
     $compstate_path = '/srv/state'
-
-    $track_source = false
 
     if $track_source {
         $vcs_ensure = 'latest'
