@@ -440,6 +440,7 @@ class compbox (
                 '/etc/nginx/sites-enabled/default',
                 '/etc/nginx/sites-enabled/compbox',
             ],
+            notify  => Service['nginx'],
         }
     }
 
