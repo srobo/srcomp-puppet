@@ -17,6 +17,7 @@ class compbox {
                            $desc,
                            $dir = undef,
                            $memory_limit = undef,
+                           $env_file = undef,
                            $depends = ['network.target'],
                            $subs = []) {
         $service_name = "${title}.service"
@@ -301,43 +302,28 @@ class compbox {
     }
 
     # Stream
-    vcsrepo { '/var/www/stream':
+    package { 'srcomp_pystream':
         ensure   => $vcs_ensure,
-        provider => git,
-        source   => "${comp_source}/srcomp-stream.git",
-        user     => 'www-data',
-        require  => File['/var/www']
-    } ~>
-    exec { 'build stream':
-        command     => '/usr/bin/npm install',
-        cwd         => '/var/www/stream',
-        user        => 'www-data',
-        refreshonly => true,
-        require     => Class['nodejs']
+        provider => 'pip3',
+        source   => "git+https://github.com/WillB97/srcomp-pystream.git"
     }
-    file { '/var/www/stream/config.coffee':
+    file { '/var/www/stream/config.env':
         ensure  => file,
-        source  => 'puppet:///modules/compbox/stream-config.coffee',
+        source  => 'puppet:///modules/compbox/stream-config.env',
         owner   => 'www-data',
-        require => VCSRepo['/var/www/stream']
+        require => Package['srcomp_pystream']
     }
-    compbox::systemd_service { 'srcomp-stream':
+    compbox::systemd_service { 'srcomp-pystream':
         desc    => 'Publishes a stream of events representing changes in the competition state.',
         dir     => '/var/www/stream',
         user    => 'www-data',
-        command => '/usr/bin/node main.js',
+        command => 'srcomp-pystream',
+        env_file => '/var/www/stream/config.env',
         memory_limit => '150M',
         depends => ['srcomp-http.service'],
-        require => Class['nodejs'],
-        subs    => [Exec['build stream'],
-                    File['/var/www/stream/config.coffee'],
+        subs    => [File['/var/www/stream/config.env'],
                     # Subscribe to the API to get config changes
                     Service['srcomp-http']]
-    }
-    file { '/var/www/html/stream-404.html':
-        ensure  => file,
-        source  => 'puppet:///modules/compbox/stream-404.html',
-        notify  => Service['nginx']
     }
 
     # API
