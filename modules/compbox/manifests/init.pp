@@ -307,6 +307,11 @@ class compbox {
         provider => 'pip3',
         source   => "git+https://github.com/WillB97/srcomp-pystream.git"
     }
+    file { '/var/www/stream':
+        ensure => directory,
+        owner  => 'www-data',
+        mode   => '0755'
+    } ->
     file { '/var/www/stream/config.env':
         ensure  => file,
         source  => 'puppet:///modules/compbox/stream-config.env',
