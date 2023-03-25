@@ -33,6 +33,7 @@ server {
     }
 
     location = /stream {
+        add_header Access-Control-Allow-Origin *;
         return 307 /stream/;
     }
     location /stream/ {
