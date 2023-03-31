@@ -48,7 +48,7 @@ server {
 
     location = /pystream {
         add_header Access-Control-Allow-Origin *;
-        return 307 /stream/;
+        return 307 /pystream/;
     }
     location /pystream/ {
         proxy_pass http://localhost:5004/;

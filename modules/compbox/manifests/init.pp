@@ -344,7 +344,7 @@ class compbox {
     package { 'srcomp_pystream':
         ensure   => $vcs_ensure,
         provider => 'pip3',
-        source   => "git+https://github.com/WillB97/srcomp-pystream.git"
+        source   => 'git+https://github.com/WillB97/srcomp-pystream.git'
     }
     file { '/var/www/stream':
         ensure => directory,
