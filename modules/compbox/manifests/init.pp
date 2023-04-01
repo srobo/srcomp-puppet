@@ -340,6 +340,7 @@ class compbox {
         source  => 'puppet:///modules/compbox/stream-404.html',
         notify  => Service['nginx']
     }
+
     # pystream
     package { 'srcomp_pystream':
         ensure   => $vcs_ensure,
