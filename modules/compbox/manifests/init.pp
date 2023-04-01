@@ -347,12 +347,12 @@ class compbox {
         provider => 'pip3',
         source   => 'git+https://github.com/WillB97/srcomp-pystream.git'
     }
-    file { '/var/www/stream':
+    file { '/var/www/pystream':
         ensure => directory,
         owner  => 'www-data',
         mode   => '0755'
     } ->
-    file { '/var/www/stream/config.env':
+    file { '/var/www/pystream/config.env':
         ensure  => file,
         source  => 'puppet:///modules/compbox/stream-config.env',
         owner   => 'www-data',
@@ -360,13 +360,13 @@ class compbox {
     }
     compbox::systemd_service { 'srcomp-pystream':
         desc    => 'Publishes a stream of events representing changes in the competition state.',
-        dir     => '/var/www/stream',
+        dir     => '/var/www/pystream',
         user    => 'www-data',
         command => 'srcomp-pystream',
-        env_file => '/var/www/stream/config.env',
+        env_file => '/var/www/pystream/config.env',
         memory_limit => '150M',
         depends => ['srcomp-http.service'],
-        subs    => [File['/var/www/stream/config.env'],
+        subs    => [File['/var/www/pystream/config.env'],
                     # Subscribe to the API to get config changes
                     Service['srcomp-http']]
     }
