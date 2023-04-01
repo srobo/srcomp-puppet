@@ -14,6 +14,9 @@ MemoryLimit=<%= @memory_limit %>
 <% if @start_dir %>
 WorkingDirectory=<%= @start_dir %>
 <% end %>
+<% if @env_file %>
+EnvironmentFile=<%= @env_file %>
+<% end %>
 
 ExecStart=<%= @start_command %>
 
