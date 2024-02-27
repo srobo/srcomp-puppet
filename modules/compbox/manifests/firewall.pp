@@ -54,7 +54,7 @@ class compbox::firewall {
   # Mythic Beasts
   firewall { '200 allow Mythic Beasts\' munin monitoring access':
     dport     => 4949,
-    source    => '93.93.128.100/32',
+    source    => '93.93.128.100',
     proto     => tcp,
     action    => accept,
   }
