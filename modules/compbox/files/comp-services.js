@@ -4,10 +4,12 @@ var http = require('http');
 var request = require('request');
 
 addWatcher('compbox stream', watchStream('http://localhost/stream', ['team', 'ping']));
+addWatcher('compbox pystream', watchStream('http://localhost/pystream', ['team', 'ping']));
 
 addWatcher('compbox API', watchHTTP('http://localhost/comp-api/arenas'));
 
 addWatcher('upstream stream', watchStream(upstreamBase + '/stream', ['team', 'ping']));
+addWatcher('upstream pystream', watchStream(upstreamBase + '/pystream', ['team', 'ping']));
 
 addWatcher('upstream API', watchHTTP(upstreamBase + '/comp-api/arenas'));
 
