@@ -192,7 +192,7 @@ class compbox (
 
     # Screens and stream
     class { '::nodejs':
-        repo_url_suffix         => '16.x',
+        repo_url_suffix         => '20.x',
     } ->
     compbox::npm_install { 'yarn':
         ensure              => present,
