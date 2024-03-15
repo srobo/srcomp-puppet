@@ -28,3 +28,9 @@
 [submodule "modules/snapd"]
 	path = modules/snapd
 	url = https://github.com/ethanhs/puppet-snapd
+[submodule "modules/augeas_core"]
+	path = modules/augeas_core
+	url = https://github.com/puppetlabs/puppetlabs-augeas_core
+[submodule "modules/host_core"]
+	path = modules/host_core
+	url = https://github.com/puppetlabs/puppetlabs-host_core
