@@ -274,12 +274,19 @@ class compbox (
     }
 
     # Compstate
+    # Create the directory first, which only root can do
+    file { $compstate_path:
+        ensure   => directory,
+        owner    => 'srcomp',
+        group    => 'www-data',
+    } ->
+    # Then clone the repo, as the right user so we don't need to do permission
+    # or `safe.directory` munging
     vcsrepo { $compstate_path:
         ensure   => present,
         provider => git,
         source   => $ref_compstate,
-        user     => 'root',
-        owner    => 'srcomp',
+        user     => 'srcomp',
         group    => 'www-data',
         require  => [User['srcomp'],Vcsrepo[$ref_compstate]],
     }
