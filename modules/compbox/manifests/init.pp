@@ -234,9 +234,9 @@ class compbox (
     vcsrepo { '/var/www/livestream-overlay':
         ensure   => $vcs_ensure,
         provider => git,
-        source   => "https://github.com/PeterJCLaw/livestream-overlay.git",
+        source   => "https://github.com/srobo/livestream-overlay.git",
         user     => 'www-data',
-        revision => '8a80c698452ccdb615b9aa4349aaa93e5e72fc8a',
+        revision => '11cb9c5ada58a6df4beb05356c6d04b4448e57d2',
     } ~>
     exec { 'install livestream-overlay dependencies':
         command     => '/usr/bin/npm install',
