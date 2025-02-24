@@ -8,7 +8,7 @@ things, including the creation of a VM suitable for use at a competition event.
 
 In particular, this configures the hosting of:
  * [SRComp HTTP](https://github.com/PeterJCLaw/srcomp-http)
- * [SRComp Stream](https://github.com/PeterJCLaw/srcomp-stream)
+ * [SRComp PyStream](https://github.com/WillB97/srcomp-pystream)
  * [SRComp Screens](https://github.com/PeterJCLaw/srcomp-screens)
  * An index page which links to the hosted services
 
