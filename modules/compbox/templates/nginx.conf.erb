@@ -32,8 +32,7 @@ server {
         index stream.html;
     }
 
-    # Support the "py" prefix, which was used whilst duel-running the experimental pystream.
-    location ~ ^/(py)?stream {
+    location /stream {
         proxy_pass http://[::]:5004/;
         proxy_redirect default;
         proxy_buffering off;
@@ -45,6 +44,12 @@ server {
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $http_connection;
+    }
+
+    # Support the "py" prefix, which was used whilst duel-running the experimental pystream.
+    location /pystream {
+        add_header Access-Control-Allow-Origin *;
+        return 307 /stream;
     }
 
     location = /monitor {
