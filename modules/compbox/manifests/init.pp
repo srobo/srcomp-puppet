@@ -190,7 +190,7 @@ class compbox (
         before => Package['sr.comp']
     }
 
-    # Screens and stream
+    # Screens
     class { '::nodejs':
         repo_url_suffix         => '20.x',
     } ->
@@ -314,46 +314,6 @@ class compbox (
         owner   => 'www-data',
     }
 
-    # Stream
-    vcsrepo { '/var/www/stream':
-        ensure   => $vcs_ensure,
-        provider => git,
-        source   => "${comp_source}/srcomp-stream.git",
-        user     => 'www-data',
-        require  => File['/var/www']
-    } ~>
-    exec { 'build stream':
-        command     => '/usr/bin/npm install',
-        cwd         => '/var/www/stream',
-        user        => 'www-data',
-        refreshonly => true,
-        require     => Class['nodejs']
-    }
-    file { '/var/www/stream/config.coffee':
-        ensure  => file,
-        source  => 'puppet:///modules/compbox/stream-config.coffee',
-        owner   => 'www-data',
-        require => VCSRepo['/var/www/stream']
-    }
-    compbox::systemd_service { 'srcomp-stream':
-        desc    => 'Publishes a stream of events representing changes in the competition state.',
-        dir     => '/var/www/stream',
-        user    => 'www-data',
-        command => '/usr/bin/node main.js',
-        memory_limit => '150M',
-        depends => ['srcomp-http.service'],
-        require => Class['nodejs'],
-        subs    => [Exec['build stream'],
-                    File['/var/www/stream/config.coffee'],
-                    # Subscribe to the API to get config changes
-                    Service['srcomp-http']]
-    }
-    file { '/var/www/html/stream-404.html':
-        ensure  => file,
-        source  => 'puppet:///modules/compbox/stream-404.html',
-        notify  => Service['nginx']
-    }
-
     # pystream
     package { 'srcomp_pystream':
         ensure   => $vcs_ensure,
@@ -473,6 +433,7 @@ class compbox (
             plugin  => nginx,
             domains => [$www_hostname] + $secondary_domains,
             require => Package['nginx', 'certbot'],
+            manage_cron => true,
             # Ensure the initial certificate request gets handled by the default
             # configuration as our custom config directly references the
             # certificate, which otherwise doesn't exist yet.
