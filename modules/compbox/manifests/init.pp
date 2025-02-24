@@ -473,6 +473,7 @@ class compbox (
             plugin  => nginx,
             domains => [$www_hostname] + $secondary_domains,
             require => Package['nginx', 'certbot'],
+            manage_cron => true,
             # Ensure the initial certificate request gets handled by the default
             # configuration as our custom config directly references the
             # certificate, which otherwise doesn't exist yet.
