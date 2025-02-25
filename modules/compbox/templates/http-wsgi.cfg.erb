@@ -8,5 +8,5 @@ app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
     '/comp-api': app.wsgi_app
 })
 
-bind = '[::]:5112'
+bind = '[::1]:5112'
 keepalive = 5
