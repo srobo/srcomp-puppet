@@ -213,7 +213,7 @@ class compbox (
     vcsrepo { '/var/www/screens':
         ensure   => $vcs_ensure,
         provider => git,
-        source   => "${comp_source}/srcomp-screens.git",
+        source   => "https://github.com/srobo/srcomp-screens.git",
         user     => 'www-data'
     } ~>
     exec { 'build screens':
