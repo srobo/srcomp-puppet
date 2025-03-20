@@ -39,7 +39,8 @@ server {
         proxy_buffering off;
         proxy_read_timeout 8m;
 
-        add_header Access-Control-Allow-Origin *;
+        # CORS header is handled by srcomp-pystream directly
+        #add_header Access-Control-Allow-Origin *;
     }
 
     # Allow other paths of stream to be accessed.
@@ -49,7 +50,8 @@ server {
         proxy_buffering off;
         proxy_read_timeout 8m;
 
-        add_header Access-Control-Allow-Origin *;
+        # CORS header is handled by srcomp-pystream directly
+        #add_header Access-Control-Allow-Origin *;
 
         # The following config is required to proxy websockets
         proxy_http_version 1.1;
