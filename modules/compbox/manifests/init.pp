@@ -441,6 +441,8 @@ class compbox (
                 '/etc/nginx/sites-enabled/default',
                 '/etc/nginx/sites-enabled/compbox',
             ],
+            # Ensure nginx is reloaded after each cron execution
+            cron_success_command => '/bin/systemctl reload nginx.service',
             notify  => Service['nginx'],
         }
     }
