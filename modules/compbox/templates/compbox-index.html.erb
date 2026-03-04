@@ -3,11 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title><%= @fqdn %></title>
-    <style type="text/css">
-        .for-machines {
-            display: none;
-        }
-    </style>
 </head>
 <body>
     <h1><%= @fqdn %></h1>
@@ -26,6 +21,7 @@
         </ul>
     </div>
     <div class="for-machines">
+        <h2>APIs</h2>
         <ul>
             <li><a href="/comp-api/">Comp API</a></li>
             <li><a href="/stream">Comp API Stream</a></li>
