@@ -245,7 +245,7 @@ class compbox (
         provider => git,
         source   => "https://github.com/srobo/livestream-overlay.git",
         user     => 'www-data',
-        revision => '98c2fea68b88989fd1001743c2812855df163c0f',
+        revision => '58089992cca10b4d7e12d1c65559bc2858407cd0',
     } ~>
     exec { 'install livestream-overlay dependencies':
         command     => '/usr/bin/npm install',
